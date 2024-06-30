@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang = "en-US">
+<head>
+    <meta charset = "UTF-8">
+    <title>
+        Health Risk Evaluator
+    </title>
+    <script type = "text/javascript">
+        // from textBoxes.html
+        function evaluateHealthRisk(){
+            // Obtain values.
+            let sex = document.getElementById("sex").value; // 0 = female, 1 = male.
+            let age = document.getElementById("age").value;
+            let weight = document.getElementById("weight").value;
+            let height = document.getElementById("height").value;
+            let tc = document.getElementById("tc").value;
+            let hdl = document.getElementById("hdl").value;
+            let sbp = document.getElementById("sbp").value;
+            let dbp = document.getElementById("dbp").value;
+            let bmi = document.getElementById("bmi").value;
+            let egfr = document.getElementById("egfr").value;
+            let dm = document.getElementById("diabetes").value; // 0 = non-diabetic, 1 = diabetic.
+            let smoke = document.getElementById("smoke").value; // 0 = non-smoker, 1 = smoker.
+            let antiHTMed = document.getElementById("antiHTMed").value; // 0 = No anti-HT med, 1 = Anti-HT med.
+            let lipidLoweringMed = document.getElementById("lipidLoweringMed").value;
+            let uacr = document.getElementById("uacr").value;
+            let HbA1c = document.getElementById("HbA1c").value;
+            // Setup.
+            const report_digit = 4;
+            const warning_parameter = "***"; // "insufficient parameters to calculate"
+            // Derived parameters.
+            let whr; if(weight === "" || height === "") {whr = ""} else {whr = weight / height;}
+            // Log inputs to console.
+            console.log(`Sex = ${sex}`);
+            console.log(`Age = ${age} years`);
+            console.log(`Weight = ${weight} kg`);
+            console.log(`Height = ${height} cm`);
+            console.log(`Total cholesterol = ${tc} mg/dL`);
+            console.log(`HDL = ${hdl} mg/dL`);
+            console.log(`SBP = ${sbp} mmHg`);
+            console.log(`DBP = ${dbp} mmHg`);
+            console.log(`BMI = ${bmi} kg/m^2`);
+            console.log(`eGFR = ${egfr} mL/min/1.73m^2`);
+            console.log(`Diabetes = ${dm}`);
+            console.log(`Smoke = ${smoke}`);
+            console.log(`Anti-hypertensive medication = ${antiHTMed}`);
+            console.log(`Lipid-lowering medication = ${lipidLoweringMed}`)
+            console.log(`Urine albumin-to-creatinine ratio = ${uacr} mg/g`)
+            console.log(`HbA1c = ${HbA1c} %`);
+            console.log(`Waist-to-height ratio: ${whr}`)
+            // List parameter availability
+
+
+
+
+            // Thai CV Risk Score (total cholesterol formula).
+            let tascvd_tc;
+            let tascvd_tc_report;
+            let tascvd_tc_model_name = "Thai CV Risk Score (total cholesterol formula)";
+            if(age === "" || sbp === "" || tc === "") {
+                tascvd_tc_report = `${tascvd_tc_model_name} = ${warning_parameter}.`;
+            } else {
+                tascvd_tc = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke);
+                tascvd_tc = 1 - Math.pow(0.964588, Math.exp(tascvd_tc - 7.04423));
+                tascvd_tc = tascvd_tc * 100;
+                tascvd_tc = Number(tascvd_tc.toFixed(report_digit));
+                tascvd_tc_report = `${tascvd_tc_model_name} = ${tascvd_tc}%`;
+            }
+            console.log(tascvd_tc_report);
+
+
+            // Thai CV Risk Score (waist-to-height ratio formula).
+            let tascvd_whr;
+            let tascvd_whr_report;
+            let tascvd_whr_model_name = "Thai CV Risk Score (waist-to-height ratio formula)";
+            if(age === "" || whr === "" || sbp === "") {
+                tascvd_whr_report = `${tascvd_whr_model_name} = ${warning_parameter}.`;
+            } else {
+                tascvd_whr = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke);
+                tascvd_whr = 1 - Math.pow(0.964588, Math.exp(tascvd_whr - 7.712325));
+                tascvd_whr = tascvd_whr * 100;
+                tascvd_whr = Number(tascvd_whr.toFixed(report_digit));
+                tascvd_whr_report = `${tascvd_whr_model_name} = ${tascvd_whr}%`;
+            }
+            console.log(tascvd_whr_report);
+
+            // AHA PREVENT(TM)
+            let aha_prevent_model_name;
+            let aha_prevent;
+            let aha_prevent_report_CVD10_base_model;
+            let aha_prevent_report_CVD10_uacr_model;
+            let aha_prevent_report_CVD10_HbA1c_model;
+            let aha_prevent_report_ASCVD10_base_model;
+            let aha_prevent_report_ASCVD10_uacr_model;
+            let aha_prevent_report_ASCVD10_HbA1c_model;
+            let aha_prevent_report_HF10_base_model;
+            let aha_prevent_report_HF10_uacr_model;
+            let aha_prevent_report_HF10_HbA1c_model;
+            let HbA1c_aha_prevent;
+
+            if (sex === 1) {
+                // Risk of CVD | Base model | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; base model)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "") {
+                    aha_prevent_report_CVD10_base_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = .7688528 * (age - 55) / 10 - 3.031168 + .0736174 * (.02586 * (tc - hdl) - 3.5) - .0954431 * (.02586 * hdl - 1.3) / .3 - .4347345 * (Math.min(sbp, 110) - 110) / 20 + .3362658 * (Math.max(sbp, 110) - 130) / 20 + .7692857 * dm + .4386871 * smoke + .5378979 * (Math.min(egfr, 60) - 60) / -15 + .0164827 * (Math.max(egfr, 60) - 90) / -15 + .288879 * antiHTMed - .1337349 * lipidLoweringMed - .0475924 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .150273 * lipidLoweringMed * (.025860 * (tc - hdl) - 3.5) - .0517874 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0191169 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .1049477 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2251948 * dm * (age - 55) / 10 - .0895067 * smoke * (age - 55) / 10 - .1543702 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_CVD10_base_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_CVD10_base_model);
+
+                // Risk of CVD | Model that included UACR | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; model that included UACR)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || uacr === "") {
+                    aha_prevent_report_CVD10_uacr_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = (age - 55) / 10 * .7768655 - 3.510705 + .0659949 * (.02586 * (tc - hdl) - 3.5) - .0951111 * (.02586 * hdl - 1.3) / .3 - .4206670 * (Math.min(sbp, 110) - 110) / 20 + .3120151 * (Math.max(sbp, 110) - 130) / 20 + .6985210 * dm + .4314669 * smoke + .3841364 * (Math.min(egfr, 60) - 60) / -15 + .009384 * (Math.max(egfr, 60) - 90) / -15 + .2676494 * antiHTMed - .1390966 * lipidLoweringMed - .0579315 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1383719 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0488332 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0200406 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .1024540 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2236355 * dm * (age - 55) / 10 - .0894850 * smoke * (age - 55) / 10 - .1321848 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + .1887974 * Math.log(uacr);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_CVD10_uacr_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_CVD10_uacr_model);
+
+                // Risk of CVD | Model that included HbA1c | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; model that included HbA1c)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || HbA1c === "") {
+                    aha_prevent_report_CVD10_HbA1c_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    if (dm === 1) {HbA1c_aha_prevent = .13159 * (HbA1c - 5.3)} else {HbA1c_aha_prevent = .1295185 * (HbA1c - 5.3)}
+                    aha_prevent = (age - 55) / 10 * .7699177 - 3.040901 + .0605093 * (.02586 * (tc - hdl) - 3.5) - .0888525 * (.02586 * hdl - 1.3) / .3 - .4177130 * (Math.min(sbp, 110) - 110) / 20 + .3288657 * (Math.max(sbp, 110) - 130) / 20 + .4759471 * dm + .4385663 * smoke + .5334616 * (Math.min(egfr, 60) - 60) / -15 + .0206431 * (Math.max(egfr, 60) - 90) / -15 + .2917524 * antiHTMed - .1383313 * lipidLoweringMed - .0482622 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1393796 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0463501 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0205926 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .1037717 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .1737697 * dm * (age - 55) / 10 - .0915839 * smoke * (age - 55) / 10 - .1637039 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + HbA1c_aha_prevent;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_CVD10_HbA1c_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_CVD10_HbA1c_model);
+
+                // Risk of ASCVD | Base model | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of ASCVD; base model)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "") {
+                    aha_prevent_report_ASCVD10_base_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = .7099847 * (age - 55) / 10 - 3.500655 + .1658663 * (.02586 * (tc - hdl) - 3.5) - .1144285 * (.02586 * hdl - 1.3) / .3 - .2837212 * (Math.min(sbp, 110) - 110) / 20 + .3239977 * (Math.max(sbp, 110) - 130) / 20 + .7189597 * dm + .3956973 * smoke + .3690075 * (Math.min(egfr, 60) - 60) / -15 + .0203619 * (Math.max(egfr, 60) - 90) / -15 + .2036522 * antiHTMed - .0865581 * lipidLoweringMed - .0322916 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .114563 * lipidLoweringMed * (.025860 * (tc - hdl) - 3.5) - .0300005 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0232747 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0927024 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2018525 * dm * (age - 55) / 10 - .0970527 * smoke * (age - 55) / 10 - .1217081 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_ASCVD10_base_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_ASCVD10_base_model);
+
+                // Risk of ASCVD | Model that included UACR | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of ASCVD; model that included UACR)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || uacr === "") {
+                    aha_prevent_report_ASCVD10_uacr_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = .7141718 * (age - 55) / 10 - 3.851460 + .1602194 * (.02586 * (tc - hdl) - 3.5) - .1139086 * (.02586 * hdl - 1.3) / .3 - .2719456 * (Math.min(sbp, 110) - 110) / 20 + .3058719 * (Math.max(sbp, 110) - 130) / 20 + .6600631 * dm + .3884022 * smoke + .2466316 * (Math.min(egfr, 60) - 60) / -15 + .0151852 * (Math.max(egfr, 60) - 90) / -15 + .1861670 * antiHTMed - .0894395 * lipidLoweringMed - .0411884 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1058212 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0280890 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0240427 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0912325 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2004894 * dm * (age - 55) / 10 - .0969360 * smoke * (age - 55) / 10 - .1022867 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + .1510073 * Math.log(uacr);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_ASCVD10_uacr_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_ASCVD10_uacr_model);
+
+                // Risk of ASCVD | Model that included HbA1c | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of ASCVD; model that included HbA1c)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || HbA1c === "") {
+                    aha_prevent_report_ASCVD10_HbA1c_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    if (dm === 1) {HbA1c_aha_prevent = .1157161 * (HbA1c - 5.3)} else {HbA1c_aha_prevent = .1288303 * (HbA1c - 5.3)}
+                    aha_prevent = .7064146 * (age - 55) / 10 - 3.518350 + .1532267 * (.02586 * (tc - hdl) - 3.5) - .1082166 * (.02586 * hdl - 1.3) / .3 - .2675288 * (Math.min(sbp, 110) - 110) / 20 + .3173809 * (Math.max(sbp, 110) - 130) / 20 + .4326040 * dm + .3958842 * smoke + .3665014 * (Math.min(egfr, 60) - 60) / -15 + .0250243 * (Math.max(egfr, 60) - 90) / -15 + .2061158 * antiHTMed - .0899988 * lipidLoweringMed - .0334959 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1034168 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0255406 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0247538 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0917441 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .1499195 * dm * (age - 55) / 10 - .0980890 * smoke * (age - 55) / 10 - .1305231 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + HbA1c_aha_prevent;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_ASCVD10_HbA1c_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_ASCVD10_HbA1c_model);
+
+                // Risk of HF | Base model | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of HF; base model)";
+                if(age === "" || sbp === "" || bmi === "" || egfr === "") {
+                    aha_prevent_report_HF10_base_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = (age - 55) / 10 * .8972642 - 3.946391 - .6811466 * (Math.min(sbp, 110) - 110) / 20 + .3634461 * (Math.max(sbp, 110) - 130) / 20 + .923776 * dm + .5023736 * smoke - (Math.min(bmi, 30) - 25) / 5 * .0485841 + (Math.max(bmi, 30) - 30) / 5 * .3726929 + (Math.min(egfr, 60) - 60) / -15 * .6926917 + (Math.max(egfr, 60) - 90) / -15 * .0251827 + .2980922 * antiHTMed - .0497731 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 - (age - 55) / 10 * .1289201 * ((Math.max(sbp, 110) - 130) / 20) - .3040924 * dm * (age - 55) / 10 - .1401688 * smoke * (age - 55) / 10 + (age - 55) / 10 * .0068126 * ((Math.max(bmi, 30) - 30) / 5) - (age - 55) / 10 * .1797778 * ((Math.min(egfr, 60) - 60) / -15);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_HF10_base_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_HF10_base_model);
+
+                // Risk of HF | Model that included UACR | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of HF; model that included UACR)";
+                if(age === "" || sbp === "" || bmi === "" || egfr === "" || uacr === "") {
+                    aha_prevent_report_HF10_uacr_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = (age - 55) / 10 * .9111795 - 4.556907 - .6693649 * (Math.min(sbp, 110) - 110) / 20 + .3290082 * (Math.max(sbp, 110) - 130) / 20 + .8377655 * dm + .4978917 * smoke - (Math.min(bmi, 30) - 25) / 5 * .0427490 + (Math.max(bmi, 30) - 30) / 5 * .3624165 + (Math.min(egfr, 60) - 60) / -15 * .5075796 + (Math.max(egfr, 60) - 90) / -15 * .0137716 + .2739963 * antiHTMed - .0645712 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 - (age - 55) / 10 * .1230039 * ((Math.max(sbp, 110) - 130) / 20) - .3013297 * dm * (age - 55) / 10 - .1410318 * smoke * (age - 55) / 10 + (age - 55) / 10 * .0021531 * ((Math.max(bmi, 30) - 30) / 5) - (age - 55) / 10 * .1548018 * ((Math.min(egfr, 60) - 60) / -15) + .2306299 * Math.log(uacr);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_HF10_uacr_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_HF10_uacr_model);
+
+                // Risk of HF | Model that included HbA1c | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of HF; model that included HbA1c)";
+                if(age === "" || sbp === "" || bmi === "" || egfr === "" || HbA1c === "") { // check again
+                    aha_prevent_report_HF10_HbA1c_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    if (dm === 1) {HbA1c_aha_prevent = .1652857 * (HbA1c - 5.3)} else {HbA1c_aha_prevent = .1505859 * (HbA1c - 5.3)}
+                    aha_prevent = (age - 55) / 10 * .9117870 - 3.961954 - .6568071 * (Math.min(sbp, 110) - 110) / 20 + .3524645 * (Math.max(sbp, 110) - 130) / 20 + .5849752 * dm + .5014014 * smoke - (Math.min(bmi, 30) - 25) / 5 * .0512352 + (Math.max(bmi, 30) - 30) / 5 * .3652940 + (Math.min(egfr, 60) - 60) / -15 * .6892219 + (Math.max(egfr, 60) - 90) / -15 * .0292377 + .3038296 * antiHTMed - .0515032 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 - (age - 55) / 10 * .1262343 * ((Math.max(sbp, 110) - 130) / 20) - .2449514 * dm * (age - 55) / 10 - .1392217 * smoke * (age - 55) / 10 + (age - 55) / 10 * 9592e-7 * ((Math.max(bmi, 30) - 30) / 5) - (age - 55) / 10 * .1917105 * ((Math.min(egfr, 60) - 60) / -15) + HbA1c_aha_prevent;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_HF10_HbA1c_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_HF10_HbA1c_model);
+            } else { // Female
+                // Risk of CVD | Base model | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; base model)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "") {
+                    aha_prevent_report_CVD10_base_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = .7939329 * (age - 55) / 10 - 3.307728 + .0305239 * (.02586 * (tc - hdl) - 3.5) - .1606857 * (.02586 * hdl - 1.3) / .3 - .2394003 * (Math.min(sbp, 110) - 110) / 20 + .3600781 * (Math.max(sbp, 110) - 130) / 20 + .8667604 * dm + .5360739 * smoke + .6045917 * (Math.min(egfr, 60) - 60) / -15 + .0433769 * (Math.max(egfr, 60) - 90) / -15 + .3151672 * antiHTMed - .1477655 * lipidLoweringMed + -.0663612 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1197879 * lipidLoweringMed * (.025860 * (tc - hdl) - 3.5) - .0819715 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0306769 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0946348 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 + -.270570 * dm * (age - 55) / 10 + -.078715 * smoke * (age - 55) / 10 - .1637806 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_CVD10_base_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_CVD10_base_model);
+
+                // Risk of CVD | Model that included UACR | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; model that included UACR)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || uacr === "") {
+                    aha_prevent_report_CVD10_uacr_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = (age - 55) / 10 * .7969249 - 3.738341 + .0256635 * (.02586 * (tc - hdl) - 3.5) - .1588107 * (.02586 * hdl - 1.3) / .3 - .2255701 * (Math.min(sbp, 110) - 110) / 20 + .3396649 * (Math.max(sbp, 110) - 130) / 20 + .8047515 * dm + .5285338 * smoke + .4803511 * (Math.min(egfr, 60) - 60) / -15 + .0434472 * (Math.max(egfr, 60) - 90) / -15 + .2985207 * antiHTMed - .1497787 * lipidLoweringMed - .0742889 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1067560 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0778126 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0306768 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0907168 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2705122 * dm * (age - 55) / 10 - .0830564 * smoke * (age - 55) / 10 - .1389249 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + .1793037 * Math.log(uacr);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_CVD10_uacr_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_CVD10_uacr_model);
+
+                // Risk of CVD | Model that included HbA1c | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; model that included HbA1c)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || HbA1c === "") {
+                    aha_prevent_report_CVD10_HbA1c_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    // **
+                    if (dm === 1) {HbA1c_aha_prevent = .1338348 * (HbA1c - 5.3)} else {HbA1c_aha_prevent = .1622409 * (HbA1c - 5.3)}
+                    aha_prevent = (age - 55) / 10 * .7858178 - 3.306162 + .0194438 * (.02586 * (tc - hdl) - 3.5) - .1521964 * (.02586 * hdl - 1.3) / .3 - .2296681 * (Math.min(sbp, 110) - 110) / 20 + .3465777 * (Math.max(sbp, 110) - 130) / 20 + .5366241 * dm + .5411682 * smoke + .5931898 * (Math.min(egfr, 60) - 60) / -15 + .0472458 * (Math.max(egfr, 60) - 90) / -15 + .3158567 * antiHTMed - .1535174 * lipidLoweringMed - .0687752 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .1054746 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0761119 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0307469 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0905966 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2241857 * dm * (age - 55) / 10 - .0801860 * smoke * (age - 55) / 10 - .1667286 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + HbA1c_aha_prevent;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_CVD10_HbA1c_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_CVD10_HbA1c_model);
+
+                // Risk of ASCVD | Base model | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of ASCVD; base model)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "") {
+                    aha_prevent_report_ASCVD10_base_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = (age - 55) / 10 * .7198830 - 3.819975 + .1176967 * (.02586 * (tc - hdl) - 3.5) - .1511850 * (.02586 * hdl - 1.3) / .3 - .0835358 * (Math.min(sbp, 110) - 110) / 20 + .3592852 * (Math.max(sbp, 110) - 130) / 20 + .8348585 * dm + .4831078 * smoke + .4864619 * (Math.min(egfr, 60) - 60) / -15 + .0397779 * (Math.max(egfr, 60) - 90) / -15 + .2265309 * antiHTMed - .0592374 * lipidLoweringMed - .0395762 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .0844423 * lipidLoweringMed * (.025860 * (tc - hdl) - 3.5) - .0567839 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0325692 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .1035985 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2417542 * dm * (age - 55) / 10 - .0791142 * smoke * (age - 55) / 10 - .1671492 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_ASCVD10_base_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_ASCVD10_base_model);
+
+                // Risk of ASCVD | Model that included UACR | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of ASCVD; model that included UACR)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || uacr === "") {
+                    aha_prevent_report_ASCVD10_uacr_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = (age - 55) / 10 * .7201999 - 4.174614 + .1135771 * (.02586 * (tc - hdl) - 3.5) - .1493506 * (.02586 * hdl - 1.3) / .3 - .0726677 * (Math.min(sbp, 110) - 110) / 20 + .3436259 * (Math.max(sbp, 110) - 130) / 20 + .7773094 * dm + .4746662 * smoke + .3824646 * (Math.min(egfr, 60) - 60) / -15 + .0394178 * (Math.max(egfr, 60) - 90) / -15 + .2125182 * antiHTMed - .0603046 * lipidLoweringMed - .0466053 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .0733118 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0534262 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0325689 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0999887 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .2411762 * dm * (age - 55) / 10 - .0826941 * smoke * (age - 55) / 10 - .1444737 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + .1501217 * Math.log(uacr);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_ASCVD10_uacr_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_ASCVD10_uacr_model);
+
+                // Risk of ASCVD | Model that included HbA1c | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of ASCVD; model that included HbA1c)";
+                if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "" || HbA1c === "") {
+                    aha_prevent_report_ASCVD10_HbA1c_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    // **
+                    if (dm === 1) {HbA1c_aha_prevent = .1339055 * (HbA1c - 5.3)} else {HbA1c_aha_prevent = .1596461 * (HbA1c - 5.3)}
+                    aha_prevent = (age - 55) / 10 * .7111831 - 3.838746 + .1067970 * (.02586 * (tc - hdl) - 3.5) - .1425745 * (.02586 * hdl - 1.3) / .3 - .0736824 * (Math.min(sbp, 110) - 110) / 20 + .3480844 * (Math.max(sbp, 110) - 130) / 20 + .5112951 * dm + .4880292 * smoke + .4754997 * (Math.min(egfr, 60) - 60) / -15 + .0438132 * (Math.max(egfr, 60) - 90) / -15 + .2259093 * antiHTMed - .0648872 * lipidLoweringMed - .0437645 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 + .0697082 * lipidLoweringMed * (.02586 * (tc - hdl) - 3.5) - .0506382 * (age - 55) / 10 * (.02586 * (tc - hdl) - 3.5) + .0327475 * (age - 55) / 10 * (.02586 * hdl - 1.3) / .3 - .0996442 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .1924338 * dm * (age - 55) / 10 - .0803539 * smoke * (age - 55) / 10 - .1682586 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + HbA1c_aha_prevent;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_ASCVD10_HbA1c_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_ASCVD10_HbA1c_model);
+
+                // Risk of HF | Base model | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of HF; base model)";
+                if(age === "" || sbp === "" || bmi === "" || egfr === "") {
+                    aha_prevent_report_HF10_base_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    let A, M, I, D, E, T;
+                    if (dm === 1) {A = 1.038346} else {A = 0}
+                    if (smoke === 1) {M = .583916} else {M = 0}
+                    if (antiHTMed === 1) {I = .3534442} else {I = 0}
+                    if (antiHTMed === 1) {D = .0981511 * (Math.max(sbp, 110) - 130) / 20} else {D = 0}
+                    if (dm === 1) {E = .3581041 * (age - 55) / 10} else {E = 0}
+                    if (smoke === 1) {T = .1159453 * (age - 55) / 10} else {T = 0}
+                    aha_prevent = .8998235 * (age - 55) / 10 - 4.310409 - .4559771 * (Math.min(sbp, 110) - 110) / 20 + .3576505 * (Math.max(sbp, 110) - 130) / 20 + A + M - .0072294 * (Math.min(bmi, 30) - 25) / 5 + .2997706 * (Math.max(bmi, 30) - 30) / 5 + .7451638 * (Math.min(egfr, 60) - 60) / -15 + .0557087 * (Math.max(egfr, 60) - 90) / -15 + I - D - .0946663 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - E - T - .003878 * (age - 55) / 10 * (Math.max(bmi, 30) - 30) / 5 - .1884289 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_HF10_base_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_HF10_base_model);
+
+                // Risk of HF | Model that included UACR | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of HF; model that included UACR)";
+                if(age === "" || sbp === "" || bmi === "" || egfr === "" || uacr === "") {
+                    aha_prevent_report_HF10_uacr_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    aha_prevent = .9145975 * (age - 55) / 10 - 4.841506 - .4441346 * (Math.min(sbp, 110) - 110) / 20 + .3260323 * (Math.max(sbp, 110) - 130) / 20 + .9611365 * dm + .5755787 * smoke + 8831e-7 * (Math.min(bmi, 30) - 25) / 5 + .2988964 * (Math.max(bmi, 30) - 30) / 5 + .5915291 * (Math.min(egfr, 60) - 60) / -15 + .0556823 * (Math.max(egfr, 60) - 90) / -15 + .3314097 * antiHTMed - .1078596 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 - .0875231 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .356859 * dm * (age - 55) / 10 - .1220248 * smoke * (age - 55) / 10 - .0053637 * (age - 55) / 10 * (Math.max(bmi, 30) - 30) / 5 - .1610389 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + .2197281 * Math.log(uacr);
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_HF10_uacr_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_HF10_uacr_model);
+
+                // Risk of HF | Model that included HbA1c | 10-year.
+                aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of HF; model that included HbA1c)";
+                if(age === "" || sbp === "" || bmi === "" || egfr === "" || HbA1c === "") { // check again
+                    aha_prevent_report_HF10_HbA1c_model = `${aha_prevent_model_name} = ${warning_parameter}.`;
+                } else {
+                    if (dm === 1) {HbA1c_aha_prevent = .1856442 * (HbA1c - 5.3)} else {HbA1c_aha_prevent = .1833083 * (HbA1c - 5.3)}
+                    aha_prevent = (age - 55) / 10 * .8997391 - 4.288225 - .4422749 * (Math.min(sbp, 110) - 110) / 20 + .3378691 * (Math.max(sbp, 110) - 130) / 20 + .6812840 * dm + .5886005 * smoke - .0148657 * (Math.min(bmi, 30) - 25) / 5 + .2958374 * (Math.max(bmi, 30) - 30) / 5 + .73447 * (Math.min(egfr, 60) - 60) / -15 + .05926 * (Math.max(egfr, 60) - 90) / -15 + .3543475 * antiHTMed - .1002139 * antiHTMed * (Math.max(sbp, 110) - 130) / 20 - .0878765 * (age - 55) / 10 * (Math.max(sbp, 110) - 130) / 20 - .303684 * dm * (age - 55) / 10 - .1178943 * smoke * (age - 55) / 10 - .008345 * (age - 55) / 10 * (Math.max(bmi, 30) - 30) / 5 - .1912183 * (age - 55) / 10 * (Math.min(egfr, 60) - 60) / -15 + HbA1c_aha_prevent;
+                    aha_prevent = (Math.exp(aha_prevent) / (1 + Math.exp(aha_prevent)) * 100).toFixed(report_digit);
+                    aha_prevent_report_HF10_HbA1c_model = `${aha_prevent_model_name} = ${aha_prevent}%`;
+                }
+                console.log(aha_prevent_report_HF10_HbA1c_model);
+            }
+
+            // Generate report
+            let report = document.getElementById("report");
+            let report_string = "";
+            report_string += tascvd_tc_report + "\n";
+            report_string += tascvd_whr_report + "\n";
+            report_string += aha_prevent_report_CVD10_base_model + "\n";
+            report_string += aha_prevent_report_CVD10_uacr_model + "\n";
+            report_string += aha_prevent_report_CVD10_HbA1c_model + "\n";
+            report_string += aha_prevent_report_ASCVD10_base_model + "\n";
+            report_string += aha_prevent_report_ASCVD10_uacr_model + "\n";
+            report_string += aha_prevent_report_ASCVD10_HbA1c_model + "\n";
+            report_string += aha_prevent_report_HF10_base_model + "\n";
+            report_string += aha_prevent_report_HF10_uacr_model + "\n";
+            report_string += aha_prevent_report_HF10_HbA1c_model + "\n";
+            report_string += "\n" + "*** = Insufficient parameters to calculate." + "\n";
+            report.value = report_string;
+        }
+    </script>
+    <link rel = "stylesheet"
+          type = "text/css"
+          href = "textBoxes.css" />
+</head>
+<body style="font-family:Helvetica,sans-serif;">
+<h1>Health Risk Evaluator</h1>
+<p style="text-align:justify;">
+    <strong>This tool will evaluate your available health information against the following risk scoring systems: </strong> <br>
+    <ol>
+        <li>
+            Thai CV Risk Score. This gives 10-year CVD risk estimates.
+            <a href="https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/">[visit original website]</a> <br>
+        </li>
+        <li>
+            AHA PREVENT(TM). This gives 10-year CVD risk estimates.
+            <a href="https://professional.heart.org/en/guidelines-and-statements/prevent-calculator">[visit original website]</a> <br>
+        </li>
+        <li>
+            Stroke Risk Assessment - American Stroke Association, American Heart Association.
+            <a href="https://www.stroke.org/en/about-stroke/stroke-risk-factors/stroke-risk-assessment">[visit original website]</a> <br>
+        </li>
+        <li>
+            Stroke Risk Scorecard - National Stroke Association (currently American Stroke Association, American Heart Association) <br>
+        </li>
+        <li>
+            Revised Framingham Stroke Risk Profile (rFSRP) - Dufouil et al. (2017).
+            <a href="https://pubmed.ncbi.nlm.nih.gov/28159800/">[visit original website]</a> <br>
+        </li>
+        <li>
+            Diabetes Risk Score (DRS) - CPG for Diabetes (2023). Diabetes Association of Thailand.
+            <a href="https://www.dmthai.org/new/index.php/sara-khwam-ru/bukhlakr-thangkar-phaethy/cpg">[visit original website]</a> <br>
+        </li>
+        <li>
+            Metabolic Syndrome Diagnosis - International Diabetes Federation (IDF; 2009)
+            <a href="https://diabetesatlas.org/atlas/fourth-edition/">[visit original website]</a> <br>
+        </li>
+    </ol>
+</p>
+
+<p style="text-align:justify;">
+    <br>
+    <strong>Fair Use Act Disclaimer:</strong> <br>
+    This site may contain copyrighted material the use of which has not always been specifically authorized by the copyright owner.
+    It is being made available in effort to aid clinician as a clinical decision support system (CDSS).
+    It is believed that this constitutes a "fair use" of any such copyright material.
+    The material in this site is provided for informational purposes only, and is not intended to be a substitute fora  health care provider's consultation.
+    Please consult your own appropriate health care provider about the applicability of any opinions or recommendations with respect to your own medical conditions.
+    The information on this site does not constitute legal or technical advice.
+    If you wish to use copyrighted material from this site for purpose of your own that go beyond "fair use", you must obtain permission from the copyright owner.
+    <br>
+    <br>
+</p>
+
+<form action = "">
+    <fieldset>
+        <legend>
+            <strong>Enter available health information (left blank if not available)</strong>
+        </legend>
+        <br>
+
+        <label for="sex">Gender:</label>
+        <select id="sex" name="sex">
+            <option value=1>Male</option>
+            <option value=0>Female</option>
+        </select> <br><br>
+
+        <label for="age">Age (years):</label>
+        <input type="number" id = "age" name = "age"> <br><br>
+
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id = "weight" name = "weight"> <br><br>
+
+        <label for="height">Height (cm):</label>
+        <input type="number" id = "height" name = "height"> <br><br>
+
+        <label for="tc">Total cholesterol (mg/dL):</label>
+        <input type="number" id = "tc" name = "tc"> <br><br>
+
+        <label for="hdl">HDL cholesterol (mg/dL):</label>
+        <input type="number" id = "hdl" name = "hdl"> <br><br>
+
+        <label for="sbp">Systolic blood pressure (SBP; mmHg):</label>
+        <input type="number" id = "sbp" name = "sbp"> <br><br>
+
+        <label for="dbp">Diastolic blood pressure (DBP; mmHg):</label>
+        <input type="number" id = "dbp" name = "dbp"> <br><br>
+
+        <label for="bmi">Body mass index (BMI; kg/m^2):</label>
+        <input type="number" id = "bmi" name = "bmi"> <br><br>
+
+        <label for="egfr">Estimated glomerular filtration rate (eGFR; mL/min/1.73m^2):</label>
+        <input type="number" id = "egfr" name = "egfr"> <br><br>
+
+        <label for="diabetes">Diabetes</label>
+        <select id="diabetes" name="diabetes">
+            <option value=0>No</option>
+            <option value=1>Yes</option>
+        </select> <br><br>
+
+        <label for="smoke">Currently smoking</label>
+        <select id="smoke" name="smoke">
+            <option value=0>No</option>
+            <option value=1>Yes</option>
+        </select> <br><br>
+
+        <label for="antiHTMed">Anti-hypertensive medication</label>
+        <select id="antiHTMed" name="antiHTMed">
+            <option value=0>No</option>
+            <option value=1>Yes</option>
+        </select> <br><br>
+
+        <label for="lipidLoweringMed">Lipid-lowering medication</label>
+        <select id="lipidLoweringMed" name="lipidLoweringMed">
+            <option value=0>No</option>
+            <option value=1>Yes</option>
+        </select> <br><br>
+
+        <label for="uacr">Urine albumin-to-creatinine ratio (uACR; mg/g):</label>
+        <input type="number" id = "uacr" name = "uacr"> <br><br>
+
+        <label for="HbA1c">HbA1c (%):</label>
+        <input type="number" id = "HbA1c" name = "HbA1c"> <br><br>
+
+        <!-- <input type="submit" value="Submit" onclick = "evaluateHealthRisk()"> -->
+        <input type="button" value="Calculate" onclick = "evaluateHealthRisk()">
+
+        <p>
+            <strong>Note:</strong> Weight and height values have priority over BMI value.
+        </p>
+    </fieldset> <br>
+
+    <fieldset>
+        <legend>
+            <strong>Report</strong>
+        </legend>
+        <label for="report"></label>
+        <label>
+            <!-- <input type="text" id = "report" name = "report"> <br><br> -->
+            <textarea name="report" id="report" cols="100" rows="50"></textarea>
+        </label>
+    </fieldset>
+
+
+</form>
+</body>
+</html>
