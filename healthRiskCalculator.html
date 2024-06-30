@@ -9,20 +9,17 @@
             border-radius: 5px;
             padding: 0px;
             margin: 0px 0;
-            width: 65px;
+            width: 90px;
         }
-        .noteBoxes2
-        {
-            border: 1px solid;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px 0;
-            width: 300px;
-        }
-        .type3 {
-            border-color: #0096C7;
-            background-color: rgba(0, 150, 199, 0.1);
-        }
+        .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px;}
+        .box_drs_optional {border: 1px dashed; border-radius: 5px;padding: 0; margin: 0; width: 43px;}
+        .type_tcvrs_tc {border-color: #a70000; background-color: rgba(167, 0, 0, 0.1);}
+        .type_drs {border-color: #273ea5; background-color: rgba(39, 62, 165, 0.1);}
+        .type_drs_optional {border-color: #273ea5; background-color: rgba(39, 62, 165, 0.05);}
+        .box_aha_prevent_base {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 137px;}
+        .type_aha_prevent_base {border-color: #0A5C36; background-color: rgba(10, 92, 54, 0.1);}
+        .box_aha_prevent_base_optional {border: 1px dashed;border-radius: 5px;padding: 0; margin: 0; width: 137px;}
+        .type_aha_prevent_base_optional {border-color: #0A5C36; background-color: rgba(10, 92, 54, 0.05);}
     </style>
 
     <title>
@@ -442,46 +439,71 @@
             <option value=1>Male (ชาย)</option>
             <option value=0>Female (หญิง)</option>
         </select>
-        <!-- <div class="noteBoxes type3" style="display: inline-block;">&nbsp;TCVRS</div> -->
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
-
-
         <label for="age">Age (years) (อายุ (ปี)):</label>
-        <input type="number" id = "age" name = "age"> <br><br>
+        <input type="number" id = "age" name = "age">
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="weight">Weight (kg) (น้ำหนัก (กก.)):</label>
-        <input type="number" id = "weight" name = "weight"> <br><br>
+        <input type="number" id = "weight" name = "weight">
+        <div class="box_aha_prevent_base_optional type_aha_prevent_base_optional" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="height">Height (cm) (ส่วนสูง (ซม.)):</label>
-        <input type="number" id = "height" name = "height"> <br><br>
+        <input type="number" id = "height" name = "height">
+        <div class="box_aha_prevent_base_optional type_aha_prevent_base_optional" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="waist">Waist circumference (cm) (เส้นรอบเอว (ซม.)):</label> <!-- **-->
         <input type="number" id = "waist" name = "waist"> <br><br>
 
         <label for="bmi">Body mass index (BMI; kg/m^2) (ค่าดัชนีมวลกาย (กก./ม.^2):</label>
-        <input type="number" id = "bmi" name = "bmi"> <br><br>
+        <input type="number" id = "bmi" name = "bmi">
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="sbp">Systolic blood pressure (SBP; mmHg):</label> <!-- (ค่าแรงดันในหลอดเลือดแดงขณะหัวใจบีบตัว (มม.ปรอท)) -->
-        <input type="number" id = "sbp" name = "sbp"> <br><br>
+        <input type="number" id = "sbp" name = "sbp">
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="dbp">Diastolic blood pressure (DBP; mmHg):</label> <!-- (ค่าแรงดันในหลอดเลือดแดงขณะหัวใจคลายตัว (มม.ปรอท)) -->
-        <input type="number" id = "dbp" name = "dbp"> <br><br>
+        <input type="number" id = "dbp" name = "dbp">
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="tc">Total cholesterol (mg/dL) (โคเรสเตอรอลรวม (มก./เดซิลิตร)):</label>
-        <input type="number" id = "tc" name = "tc"> <br><br>
+        <input type="number" id = "tc" name = "tc">
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="hdl">HDL cholesterol (mg/dL):</label> <!-- (คอเลสเตอรอลชนิดดี (มก./เดซิลิตร)) -->
-        <input type="number" id = "hdl" name = "hdl"> <br><br>
+        <input type="number" id = "hdl" name = "hdl">
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="egfr">Estimated glomerular filtration rate (eGFR; mL/min/1.73m^2):</label>
-        <input type="number" id = "egfr" name = "egfr"> <br><br>
+        <input type="number" id = "egfr" name = "egfr">
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="uacr">Urine albumin-to-creatinine ratio (UACR; mg/g):</label>
         <input type="number" id = "uacr" name = "uacr"> <br><br>
 
         <label for="fpg">Fasting Plasma Glucose (FPG, %):</label>
-        <input type="number" id = "fpg" name = "fpg"> <br><br>
+        <input type="number" id = "fpg" name = "fpg">
+        <div class="box_drs_optional type_drs_optional" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="HbA1c">HbA1c (%):</label>
         <input type="number" id = "HbA1c" name = "HbA1c"> <br><br>
@@ -490,37 +512,51 @@
         <select id="hypertension" name="hypertension">
             <option value=0>No (ไม่เป็น)</option>
             <option value=1>Yes (เป็น)</option>
-        </select> <br><br>
+        </select>
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="diabetes">Diabetes (เป็นโรคเบาหวาน)</label>
         <select id="diabetes" name="diabetes">
             <option value=0>No (ไม่เป็น)</option>
             <option value=1>Yes (เป็น)</option>
-        </select> <br><br>
+        </select>
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="fm_diabetes">Family history of diabetes (ประวัติโรคเบาหวานในญาติสายตรง (พ่อ แม่ พี่ หรือน้อง))</label>
         <select id="fm_diabetes" name="fm_diabetes">
             <option value=0>No (ไม่มี)</option>
             <option value=1>Yes (มี)</option>
-        </select> <br><br>
+        </select>
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <br><br>
 
         <label for="smoke">Currently smoking (สูบบุหรี่อยู่)</label>
         <select id="smoke" name="smoke">
             <option value=0>No (ไม่)</option>
             <option value=1>Yes (ใช่)</option>
-        </select> <br><br>
+        </select>
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="antiHTMed">Anti-hypertensive medication (รัปทานยาลดความดันโลหิต)</label>
         <select id="antiHTMed" name="antiHTMed">
             <option value=0>No (ไม่)</option>
             <option value=1>Yes (ใช่)</option>
-        </select> <br><br>
+        </select>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <label for="lipidLoweringMed">Lipid-lowering medication (รัปทานยาลดไขมันในเลือด)</label>
         <select id="lipidLoweringMed" name="lipidLoweringMed">
             <option value=0>No (ไม่)</option>
             <option value=1>Yes (ใช่)</option>
-        </select> <br><br>
+        </select>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <br><br>
 
         <input type="button" value="Calculate (คำนวน)" onclick = "evaluateHealthRisk()">
 
