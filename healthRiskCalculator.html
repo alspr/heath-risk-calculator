@@ -2,6 +2,22 @@
 <html lang = "en-US">
 <head>
     <meta charset = "UTF-8">
+    <!-- <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .imgbox {
+            display: grid;
+            height: 100%;
+        }
+        .center-fit {
+            max-width: 100%;
+            max-height: 100vh;
+            margin: auto;
+        }
+    </style> -->
+
     <title>
         Health Risk Evaluator
     </title>
@@ -30,6 +46,7 @@
             const warning_parameter = "***"; // "insufficient parameters to calculate"
             // Derived parameters.
             let whr; if(weight === "" || height === "") {whr = ""} else {whr = weight / height;}
+            if (height !== "" && weight !== "") {bmi = weight / Math.sqrt(height);} else {}
             // Log inputs to console.
             console.log(`Sex = ${sex}`);
             console.log(`Age = ${age} years`);
@@ -336,129 +353,89 @@
           href = "textBoxes.css" />
 </head>
 <body style="font-family:Helvetica,sans-serif;">
-<h1>Health Risk Evaluator</h1>
-<p style="text-align:justify;">
-    <strong>This tool will evaluate your available health information against the following risk scoring systems: </strong> <br>
-    <ol>
-        <li>
-            Thai CV Risk Score. This gives 10-year CVD risk estimates.
-            <a href="https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/">[visit original website]</a> <br>
-        </li>
-        <li>
-            AHA PREVENT(TM). This gives 10-year CVD risk estimates.
-            <a href="https://professional.heart.org/en/guidelines-and-statements/prevent-calculator">[visit original website]</a> <br>
-        </li>
-        <li>
-            Stroke Risk Assessment - American Stroke Association, American Heart Association.
-            <a href="https://www.stroke.org/en/about-stroke/stroke-risk-factors/stroke-risk-assessment">[visit original website]</a> <br>
-        </li>
-        <li>
-            Stroke Risk Scorecard - National Stroke Association (currently American Stroke Association, American Heart Association) <br>
-        </li>
-        <li>
-            Revised Framingham Stroke Risk Profile (rFSRP) - Dufouil et al. (2017).
-            <a href="https://pubmed.ncbi.nlm.nih.gov/28159800/">[visit original website]</a> <br>
-        </li>
-        <li>
-            Diabetes Risk Score (DRS) - CPG for Diabetes (2023). Diabetes Association of Thailand.
-            <a href="https://www.dmthai.org/new/index.php/sara-khwam-ru/bukhlakr-thangkar-phaethy/cpg">[visit original website]</a> <br>
-        </li>
-        <li>
-            Metabolic Syndrome Diagnosis - International Diabetes Federation (IDF; 2009)
-            <a href="https://diabetesatlas.org/atlas/fourth-edition/">[visit original website]</a> <br>
-        </li>
-    </ol>
-</p>
+<h1>Health Risk Evaluator (เครื่องมือประเมินความเสี่ยงสุขภาพ)</h1>
 
-<p style="text-align:justify;">
-    <br>
-    <strong>Fair Use Act Disclaimer:</strong> <br>
-    This site may contain copyrighted material the use of which has not always been specifically authorized by the copyright owner.
-    It is being made available in effort to aid clinician as a clinical decision support system (CDSS).
-    It is believed that this constitutes a "fair use" of any such copyright material.
-    The material in this site is provided for informational purposes only, and is not intended to be a substitute fora  health care provider's consultation.
-    Please consult your own appropriate health care provider about the applicability of any opinions or recommendations with respect to your own medical conditions.
-    The information on this site does not constitute legal or technical advice.
-    If you wish to use copyrighted material from this site for purpose of your own that go beyond "fair use", you must obtain permission from the copyright owner.
-    <br>
-    <br>
-</p>
+<!-- <div class="imgbox">
+    <img class ="center-fit" src="requirements.png" alt="parameter requirements">
+</div> -->
 
 <form action = "">
     <fieldset>
         <legend>
-            <strong>Enter available health information (left blank if not available)</strong>
+            <strong>Enter available health information (left blank if not available) (กรุณากรอกข้อมูลที่มีอยู่ หากไม่มีข้อมูลกรุณาเว้นว่างไว้)</strong>
         </legend>
         <br>
 
-        <label for="sex">Gender:</label>
+        <label for="sex">Gender (เพศ):</label>
         <select id="sex" name="sex">
-            <option value=1>Male</option>
-            <option value=0>Female</option>
+            <option value=1>Male (ชาย)</option>
+            <option value=0>Female (หญิง)</option>
         </select> <br><br>
 
-        <label for="age">Age (years):</label>
+        <label for="age">Age (years) (อายุ (ปี)):</label>
         <input type="number" id = "age" name = "age"> <br><br>
 
-        <label for="weight">Weight (kg):</label>
+        <label for="weight">Weight (kg) (น้ำหนัก (กก.)):</label>
         <input type="number" id = "weight" name = "weight"> <br><br>
 
-        <label for="height">Height (cm):</label>
+        <label for="height">Height (cm) (ส่วนสูง (ซม.)):</label>
         <input type="number" id = "height" name = "height"> <br><br>
 
-        <label for="tc">Total cholesterol (mg/dL):</label>
-        <input type="number" id = "tc" name = "tc"> <br><br>
+        <label for="bmi">Body mass index (BMI; kg/m^2) (ค่าดัชนีมวลกาย (กก./ม.^2):</label>
+        <input type="number" id = "bmi" name = "bmi"> <br><br>
 
-        <label for="hdl">HDL cholesterol (mg/dL):</label>
-        <input type="number" id = "hdl" name = "hdl"> <br><br>
-
-        <label for="sbp">Systolic blood pressure (SBP; mmHg):</label>
+        <label for="sbp">Systolic blood pressure (SBP; mmHg):</label> <!-- (ค่าแรงดันในหลอดเลือดแดงขณะหัวใจบีบตัว (มม.ปรอท)) -->
         <input type="number" id = "sbp" name = "sbp"> <br><br>
 
-        <label for="dbp">Diastolic blood pressure (DBP; mmHg):</label>
+        <label for="dbp">Diastolic blood pressure (DBP; mmHg):</label> <!-- (ค่าแรงดันในหลอดเลือดแดงขณะหัวใจคลายตัว (มม.ปรอท)) -->
         <input type="number" id = "dbp" name = "dbp"> <br><br>
 
-        <label for="bmi">Body mass index (BMI; kg/m^2):</label>
-        <input type="number" id = "bmi" name = "bmi"> <br><br>
+        <label for="tc">Total cholesterol (mg/dL) (โคเรสเตอรอลรวม (มก./เดซิลิตร)):</label>
+        <input type="number" id = "tc" name = "tc"> <br><br>
+
+        <label for="hdl">HDL cholesterol (mg/dL):</label> <!-- (คอเลสเตอรอลชนิดดี (มก./เดซิลิตร)) -->
+        <input type="number" id = "hdl" name = "hdl"> <br><br>
 
         <label for="egfr">Estimated glomerular filtration rate (eGFR; mL/min/1.73m^2):</label>
         <input type="number" id = "egfr" name = "egfr"> <br><br>
 
-        <label for="diabetes">Diabetes</label>
-        <select id="diabetes" name="diabetes">
-            <option value=0>No</option>
-            <option value=1>Yes</option>
-        </select> <br><br>
-
-        <label for="smoke">Currently smoking</label>
-        <select id="smoke" name="smoke">
-            <option value=0>No</option>
-            <option value=1>Yes</option>
-        </select> <br><br>
-
-        <label for="antiHTMed">Anti-hypertensive medication</label>
-        <select id="antiHTMed" name="antiHTMed">
-            <option value=0>No</option>
-            <option value=1>Yes</option>
-        </select> <br><br>
-
-        <label for="lipidLoweringMed">Lipid-lowering medication</label>
-        <select id="lipidLoweringMed" name="lipidLoweringMed">
-            <option value=0>No</option>
-            <option value=1>Yes</option>
-        </select> <br><br>
-
-        <label for="uacr">Urine albumin-to-creatinine ratio (uACR; mg/g):</label>
+        <label for="uacr">Urine albumin-to-creatinine ratio (UACR; mg/g):</label>
         <input type="number" id = "uacr" name = "uacr"> <br><br>
 
         <label for="HbA1c">HbA1c (%):</label>
         <input type="number" id = "HbA1c" name = "HbA1c"> <br><br>
 
-        <!-- <input type="submit" value="Submit" onclick = "evaluateHealthRisk()"> -->
-        <input type="button" value="Calculate" onclick = "evaluateHealthRisk()">
+        <label for="diabetes">Diabetes (เป็นโรคเบาหวาน)</label>
+        <select id="diabetes" name="diabetes">
+            <option value=0>No (ไม่เป็น)</option>
+            <option value=1>Yes (เป็น)</option>
+        </select> <br><br>
+
+        <label for="smoke">Currently smoking (สูบบุหรี่อยู่)</label>
+        <select id="smoke" name="smoke">
+            <option value=0>No (ไม่)</option>
+            <option value=1>Yes (ใช่)</option>
+        </select> <br><br>
+
+        <label for="antiHTMed">Anti-hypertensive medication (รัปทานยาลดความดันโลหิต)</label>
+        <select id="antiHTMed" name="antiHTMed">
+            <option value=0>No (ไม่)</option>
+            <option value=1>Yes (ใช่)</option>
+        </select> <br><br>
+
+        <label for="lipidLoweringMed">Lipid-lowering medication (รัปทานยาลดไขมันในเลือด)</label>
+        <select id="lipidLoweringMed" name="lipidLoweringMed">
+            <option value=0>No (ไม่)</option>
+            <option value=1>Yes (ใช่)</option>
+        </select> <br><br>
+
+        <input type="button" value="Calculate (คำนวน)" onclick = "evaluateHealthRisk()">
 
         <p>
-            <strong>Note:</strong> Weight and height values have priority over BMI value.
+            <strong>Note (หมายเหตุ):</strong>
+            <ol>
+                <li> Weight and height values have priority over BMI value. (ค่าน้ำหนักและส่วนสูงจะถูกใช้แทนค่า BMI) </li>
+            </ol>
         </p>
     </fieldset> <br>
 
@@ -475,5 +452,54 @@
 
 
 </form>
+
+<p style="text-align:justify;">
+    <br>
+    <strong>This tool will evaluate your available health information against the following risk scoring systems: </strong> <br>
+<ol>
+    <li>
+        Thai CV Risk Score. This gives 10-year CVD risk estimates.
+        <a href="https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/">[visit original website]</a> <br>
+    </li>
+    <li>
+        AHA PREVENT(TM). This gives 10-year CVD risk estimates.
+        <a href="https://professional.heart.org/en/guidelines-and-statements/prevent-calculator">[visit original website]</a> <br>
+    </li>
+    <li>
+        Stroke Risk Assessment - American Stroke Association, American Heart Association.
+        <a href="https://www.stroke.org/en/about-stroke/stroke-risk-factors/stroke-risk-assessment">[visit original website]</a> <br>
+    </li>
+    <li>
+        Stroke Risk Scorecard - National Stroke Association (currently American Stroke Association, American Heart Association) <br>
+    </li>
+    <li>
+        Revised Framingham Stroke Risk Profile (rFSRP) - Dufouil et al. (2017).
+        <a href="https://pubmed.ncbi.nlm.nih.gov/28159800/">[visit original website]</a> <br>
+    </li>
+    <li>
+        Diabetes Risk Score (DRS) - CPG for Diabetes (2023). Diabetes Association of Thailand.
+        <a href="https://www.dmthai.org/new/index.php/sara-khwam-ru/bukhlakr-thangkar-phaethy/cpg">[visit original website]</a> <br>
+    </li>
+    <li>
+        Metabolic Syndrome Diagnosis - International Diabetes Federation (IDF; 2009)
+        <a href="https://diabetesatlas.org/atlas/fourth-edition/">[visit original website]</a> <br>
+    </li>
+</ol>
+</p>
+
+<p style="text-align:justify;">
+    <br>
+    <strong>Fair Use Act Disclaimer:</strong> <br>
+    This site may contain copyrighted material the use of which has not always been specifically authorized by the copyright owner.
+    It is being made available in effort to aid clinician as a clinical decision support system (CDSS).
+    It is believed that this constitutes a "fair use" of any such copyright material.
+    The material in this site is provided for informational purposes only, and is not intended to be a substitute fora  health care provider's consultation.
+    Please consult your own appropriate health care provider about the applicability of any opinions or recommendations with respect to your own medical conditions.
+    The information on this site does not constitute legal or technical advice.
+    If you wish to use copyrighted material from this site for purpose of your own that go beyond "fair use", you must obtain permission from the copyright owner.
+    <br>
+    <br>
+</p>
+
 </body>
 </html>
