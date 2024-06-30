@@ -2,21 +2,28 @@
 <html lang = "en-US">
 <head>
     <meta charset = "UTF-8">
-    <!-- <style>
-        * {
-            margin: 0;
-            padding: 0;
+    <style>
+        .noteBoxes
+        {
+            border: 1px solid;
+            border-radius: 5px;
+            padding: 0px;
+            margin: 0px 0;
+            width: 65px;
         }
-        .imgbox {
-            display: grid;
-            height: 100%;
+        .noteBoxes2
+        {
+            border: 1px solid;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            width: 300px;
         }
-        .center-fit {
-            max-width: 100%;
-            max-height: 100vh;
-            margin: auto;
+        .type3 {
+            border-color: #0096C7;
+            background-color: rgba(0, 150, 199, 0.1);
         }
-    </style> -->
+    </style>
 
     <title>
         Health Risk Evaluator
@@ -29,6 +36,7 @@
             let age = document.getElementById("age").value;
             let weight = document.getElementById("weight").value;
             let height = document.getElementById("height").value;
+            let waist = document.getElementById("waist").value;
             let tc = document.getElementById("tc").value;
             let hdl = document.getElementById("hdl").value;
             let sbp = document.getElementById("sbp").value;
@@ -36,16 +44,19 @@
             let bmi = document.getElementById("bmi").value;
             let egfr = document.getElementById("egfr").value;
             let dm = document.getElementById("diabetes").value; // 0 = non-diabetic, 1 = diabetic.
+            let fm_dm = document.getElementById("fm_diabetes").value; // 0 = no family history of diabetes, 1 = have family history of diabetes.
             let smoke = document.getElementById("smoke").value; // 0 = non-smoker, 1 = smoker.
+            let ht = document.getElementById("hypertension").value // 0 = normal, 1 = hypertension.
             let antiHTMed = document.getElementById("antiHTMed").value; // 0 = No anti-HT med, 1 = Anti-HT med.
             let lipidLoweringMed = document.getElementById("lipidLoweringMed").value;
             let uacr = document.getElementById("uacr").value;
+            let fpg = document.getElementById("fpg").value;
             let HbA1c = document.getElementById("HbA1c").value;
             // Setup.
             const report_digit = 4;
             const warning_parameter = "***"; // "insufficient parameters to calculate"
             // Derived parameters.
-            let whr; if(weight === "" || height === "") {whr = ""} else {whr = weight / height;}
+            let whr; if(waist !== "" || height !== "") {whr = waist / height;} else {whr = "";}
             if (height !== "" && weight !== "") {bmi = weight / Math.sqrt(height);} else {}
             // Log inputs to console.
             console.log(`Sex = ${sex}`);
@@ -67,12 +78,11 @@
             console.log(`Waist-to-height ratio: ${whr}`)
             // List parameter availability
 
-
-
-
             // Thai CV Risk Score (total cholesterol formula).
             let tascvd_tc;
+            let tascvd_tier_description_th;
             let tascvd_tc_report;
+            let tascvd_tc_report_th;
             let tascvd_tc_model_name = "Thai CV Risk Score (total cholesterol formula)";
             if(age === "" || sbp === "" || tc === "") {
                 tascvd_tc_report = `${tascvd_tc_model_name} = ${warning_parameter}.`;
@@ -82,9 +92,20 @@
                 tascvd_tc = tascvd_tc * 100;
                 tascvd_tc = Number(tascvd_tc.toFixed(report_digit));
                 tascvd_tc_report = `${tascvd_tc_model_name} = ${tascvd_tc}%`;
+                if (tascvd_tc <5) {
+                    tascvd_tier_description_th = "เสี่ยงต่ำ";
+                } else if (tascvd_tc >= 5 && tascvd_tc <= 10) {
+                    tascvd_tier_description_th = "เสี่ยงน้อย";
+                } else if (tascvd_tc > 10 && tascvd_tc <= 20) {
+                    tascvd_tier_description_th = "เสี่ยงปลานกลาง";
+                } else if (tascvd_tc >20 && tascvd_tc <= 30) {
+                    tascvd_tier_description_th = "เสี่ยงสูง";
+                } else {
+                    tascvd_tier_description_th = "เสี่ยงสูงมาก";
+                }
+                tascvd_tc_report_th = `ความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปี ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}`;
             }
             console.log(tascvd_tc_report);
-
 
             // Thai CV Risk Score (waist-to-height ratio formula).
             let tascvd_whr;
@@ -330,10 +351,58 @@
                 console.log(aha_prevent_report_HF10_HbA1c_model);
             }
 
+            // Diabetes Risk Score - CPG for DM 2023 by Diabetes Association of Thailand.
+            let drs_report;
+            let drs_report_th;
+            let drs_model_name = "Diabetes Risk Score (DRS) - CPG for DM 2023 by Diabetes Association of Thailand";
+
+            if(age === "" || bmi === "" || waist === "" || height === "" || sbp === "" || dbp === "" || fm_dm === "" || fpg === "") {
+                drs_report = `${drs_model_name} = ${warning_parameter}.`;
+            } else {
+                let drs_score = 0;
+                let drs_tier;
+                let drs_tier_description;
+                let drs_tier_description_th;
+
+                if (age < 35) {drs_score += 0;} else if (age >= 35 && age <45) {drs_score += 1;} else if (age >=45 && age <50) {drs_score += 2;} else if (age >= 50 && age <60) {drs_score += 3;} else {drs_score += 4;}
+                if (bmi < 23) {drs_score += 0;} else if (bmi >= 23 && bmi <27.5) {drs_score += 1;} else {drs_score += 3;}
+                if (whr <= 0.5) {drs_score += 0;} else if (whr >0.5 && whr <= 0.6) {drs_score += 3;} else {drs_score += 5;}
+                if (ht === 1 || antiHTMed === 1) {
+                    if (sbp >= 140) {drs_score += 4;} else {drs_score += 2;}
+                }
+                if (fm_dm === 1) {drs_score += 2;} else {drs_score += 0;}
+                if (fpg === "") {
+                    if (drs_score <= 6) {drs_tier = 1;} else if (drs_score >= 7 && drs_score <= 9) {drs_tier = 2;} else if (drs_score >= 10 && drs_score <= 12) {drs_tier = 3;} else if (drs_score >= 13 && drs_score <= 14) {drs_tier = 4;} else {drs_tier = 5;}
+                } else {
+                    if (fpg <= 100) {drs_score += 0} else {drs_score += 5}
+                    if (drs_score <= 7) {drs_tier = 1;} else if (drs_score >= 8 && drs_score <= 10) {drs_tier = 2;} else if (drs_score >= 11 && drs_score <= 14) {drs_tier = 3;} else if (drs_score >= 15 && drs_score <= 16) {drs_tier = 4;} else {drs_tier = 5;}
+                }
+                if (drs_tier === 1) {
+                    drs_tier_description = "Low-risk (0-5%)";
+                    drs_tier_description_th = "น้อย (0-5%)";
+                } else if (drs_tier === 2) {
+                    drs_tier_description = "Low-to-moderate risk (6-10%)";
+                    drs_tier_description_th = "น้อย-ปานกลาง (6-10%)";
+                } else if (drs_tier === 3) {
+                    drs_tier_description = "Moderate-to-high risk (11-20%)";
+                    drs_tier_description_th = "ปานกลาง-สูง (11-20%)";
+                } else if (drs_tier === 4) {
+                    drs_tier_description = "High risk (21-30%)";
+                    drs_tier_description_th = "สูง (21-30%)";
+                } else {
+                    drs_tier_description = "Extremely high risk (>=30%)";
+                    drs_tier_description_th = "สูงมาก (>=30%)";
+                }
+                drs_report = `${drs_model_name}. Risk score = ${drs_score}: ${drs_tier_description}.`;
+                drs_report_th = `ระดับความเสี่ยงต่อการเกิดโรคเบาหวานใน 10 ปีข้างหน้า ${drs_tier_description_th} (คะแนนความเสี่ยง = ${drs_score})`;
+                console.log(drs_report);
+            }
+
             // Generate report
             let report = document.getElementById("report");
             let report_string = "";
             report_string += tascvd_tc_report + "\n";
+            report_string += tascvd_tc_report_th + "\n";
             report_string += tascvd_whr_report + "\n";
             report_string += aha_prevent_report_CVD10_base_model + "\n";
             report_string += aha_prevent_report_CVD10_uacr_model + "\n";
@@ -344,6 +413,8 @@
             report_string += aha_prevent_report_HF10_base_model + "\n";
             report_string += aha_prevent_report_HF10_uacr_model + "\n";
             report_string += aha_prevent_report_HF10_HbA1c_model + "\n";
+            report_string += drs_report + "\n";
+            report_string += drs_report_th + "\n";
             report_string += "\n" + "*** = Insufficient parameters to calculate." + "\n";
             report.value = report_string;
         }
@@ -370,7 +441,11 @@
         <select id="sex" name="sex">
             <option value=1>Male (ชาย)</option>
             <option value=0>Female (หญิง)</option>
-        </select> <br><br>
+        </select>
+        <!-- <div class="noteBoxes type3" style="display: inline-block;">&nbsp;TCVRS</div> -->
+        <br><br>
+
+
 
         <label for="age">Age (years) (อายุ (ปี)):</label>
         <input type="number" id = "age" name = "age"> <br><br>
@@ -380,6 +455,9 @@
 
         <label for="height">Height (cm) (ส่วนสูง (ซม.)):</label>
         <input type="number" id = "height" name = "height"> <br><br>
+
+        <label for="waist">Waist circumference (cm) (เส้นรอบเอว (ซม.)):</label> <!-- **-->
+        <input type="number" id = "waist" name = "waist"> <br><br>
 
         <label for="bmi">Body mass index (BMI; kg/m^2) (ค่าดัชนีมวลกาย (กก./ม.^2):</label>
         <input type="number" id = "bmi" name = "bmi"> <br><br>
@@ -402,13 +480,28 @@
         <label for="uacr">Urine albumin-to-creatinine ratio (UACR; mg/g):</label>
         <input type="number" id = "uacr" name = "uacr"> <br><br>
 
+        <label for="fpg">Fasting Plasma Glucose (FPG, %):</label>
+        <input type="number" id = "fpg" name = "fpg"> <br><br>
+
         <label for="HbA1c">HbA1c (%):</label>
         <input type="number" id = "HbA1c" name = "HbA1c"> <br><br>
+
+        <label for="hypertension">Hypertension (เป็นโรคความดันโลหิตสูง)</label>
+        <select id="hypertension" name="hypertension">
+            <option value=0>No (ไม่เป็น)</option>
+            <option value=1>Yes (เป็น)</option>
+        </select> <br><br>
 
         <label for="diabetes">Diabetes (เป็นโรคเบาหวาน)</label>
         <select id="diabetes" name="diabetes">
             <option value=0>No (ไม่เป็น)</option>
             <option value=1>Yes (เป็น)</option>
+        </select> <br><br>
+
+        <label for="fm_diabetes">Family history of diabetes (ประวัติโรคเบาหวานในญาติสายตรง (พ่อ แม่ พี่ หรือน้อง))</label>
+        <select id="fm_diabetes" name="fm_diabetes">
+            <option value=0>No (ไม่มี)</option>
+            <option value=1>Yes (มี)</option>
         </select> <br><br>
 
         <label for="smoke">Currently smoking (สูบบุหรี่อยู่)</label>
@@ -441,7 +534,7 @@
 
     <fieldset>
         <legend>
-            <strong>Report</strong>
+            <strong>Report (รายงาน)</strong>
         </legend>
         <label for="report"></label>
         <label>
