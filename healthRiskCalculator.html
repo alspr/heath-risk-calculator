@@ -133,7 +133,7 @@
             let aha_prevent_report_HF10_HbA1c_model;
             let HbA1c_aha_prevent;
 
-            if (sex === 1) {
+            if (sex === "1") {
                 // Risk of CVD | Base model | 10-year.
                 aha_prevent_model_name = "AHA PREVENT(TM) (estimated 10-year risk of CVD; base model)";
                 if(age === "" || tc === "" || hdl === "" || sbp === "" || egfr === "") {
@@ -500,7 +500,7 @@
         <label for="uacr">Urine albumin-to-creatinine ratio (UACR; mg/g):</label>
         <input type="number" id = "uacr" name = "uacr"> <br><br>
 
-        <label for="fpg">Fasting Plasma Glucose (FPG, %):</label>
+        <label for="fpg">Fasting Plasma Glucose (FPG, mg/dL):</label>
         <input type="number" id = "fpg" name = "fpg">
         <div class="box_drs_optional type_drs_optional" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
