@@ -61,8 +61,8 @@
 
         select {
             font-size: 100%;
-            vertical-align: middle;
-            margin: 5px;
+            vertical-align: inherit;
+            margin: inherit;
             border-radius: 5px;
         }
         .cache {
@@ -116,6 +116,14 @@
             color: #2c5777;
         }
 
+        /*
+        input[type=number] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        */
 
         .noteBoxes {border: 1px solid; border-radius: 5px; padding: 0; margin: 0; width: 90px;}
         .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px; height: 16px; /* position: relative;vertical-align: center; */
@@ -619,7 +627,7 @@
 
     <fieldset>
         <legend class="defaultText">
-            <strong>Enter available health information (left blank if not available) (กรุณากรอกข้อมูลที่มีอยู่ หากไม่มีข้อมูลกรุณาเว้นว่างไว้)</strong>
+            <strong>Enter health information (กรุณากรอกข้อมูลที่จำเป็น)</strong>
         </legend>
         <br>
 
