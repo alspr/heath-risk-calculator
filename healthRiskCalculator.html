@@ -4,13 +4,11 @@
     <meta charset = "UTF-8">
     <style>
         .switch {position: relative; display: inline-block; width: 60px; height: 34px;}
-
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
         .slider {
             position: absolute;
             cursor: pointer;
@@ -22,7 +20,6 @@
             -webkit-transition: .4s;
             transition: .4s;
         }
-
         .slider:before {
             position: absolute;
             content: "";
@@ -34,43 +31,29 @@
             -webkit-transition: .4s;
             transition: .4s;
         }
-
         input:checked + .slider {
             background-color: #2196F3;
         }
-
         input:focus + .slider {
             box-shadow: 0 0 1px #2196F3;
         }
-
         input:checked + .slider:before {
             -webkit-transform: translateX(26px);
             -ms-transform: translateX(26px);
             transform: translateX(26px);
         }
-
         /* Rounded sliders */
         .slider.round {
             border-radius: 34px;
         }
-
         .slider.round:before {
             border-radius: 50%;
         }
         #test {
-            height: 5px;
+            height: 3px;
             display: inline-block;
             vertical-align: middle;
         }
-        .cache {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-
-
-
 
         .noteBoxes {border: 1px solid; border-radius: 5px; padding: 0; margin: 0; width: 90px;}
         .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px;}
@@ -530,10 +513,6 @@
             <strong>Select risk scoring system to evaluate (กรุณาเลือกระบบประเมินความเสี่ยงที่จะประเมิน)</strong>
         </legend> <br>
 
-
-        <input type="checkbox" class="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
-        <label for="tcvrs_to_eval">Thai CV Risk Score</label> <br><br>
-
         <!--
         <input type="checkbox" class="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
         <label for="tcvrs_to_eval">Thai CV Risk Score</label> <br><br>
@@ -541,14 +520,11 @@
         -->
 
         <label class="switch">
-            <input type="checkbox" id="test_sth" name="test" checked>
+            <input type="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
             <span class="slider round"></span>
         </label>
-        <label id="test">Thai CV Risk Score</label>
-
-
+        <label id="test">&nbsp;Thai CV Risk Score</label>
         <br><br>
-
 
         <input type="checkbox" class="checkbox" id="drs_to_eval" name="drs_to_eval" checked> <!-- value="onclick="myFunction()"-->
         <label for="drs_to_eval">Diabetic Risk Score</label> <br><br>
