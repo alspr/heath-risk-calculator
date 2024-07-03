@@ -3,6 +3,67 @@
 <head>
     <meta charset = "UTF-8">
     <style>
+        .switch {position: relative; display: inline-block; width: 60px; height: 34px;}
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .inline{
+            display: inline-block;
+        }
+
+
+
+
         .noteBoxes {border: 1px solid; border-radius: 5px; padding: 0; margin: 0; width: 90px;}
         .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px;}
         .box_drs_optional {border: 1px dashed; border-radius: 5px;padding: 0; margin: 0; width: 43px;}
@@ -21,7 +82,10 @@
     <script type = "text/javascript">
         // from textBoxes.html
         function evaluateHealthRisk(){
-            // Obtain values.
+            // Obtain risk score system of interest.
+            let tcvrs_to_eval = document.getElementById("tcvrs_to_eval").checked;
+            let drs_to_eval = document.getElementById("drs_to_eval").checked;
+            // Obtain health information values.
             let sex = document.getElementById("sex").value; sex = Number(sex); // 0 = female, 1 = male.
             let age = document.getElementById("age").value; age = Number(age);
             let weight = document.getElementById("weight").value; weight = Number(weight);
@@ -79,6 +143,7 @@
             let tascvd_tc_model_name = "Thai CV Risk Score (total cholesterol formula)";
             if(age === 0 || sbp === 0 || tc === 0) {
                 tascvd_tc_report = `${tascvd_tc_model_name} = ${warning_parameter}.`;
+                tascvd_tc_report_th = `${tascvd_tc_model_name} = ${warning_parameter}.`;
             } else {
                 tascvd_tc = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke);
                 tascvd_tc = 1 - Math.pow(0.964588, Math.exp(tascvd_tc - 7.04423));
@@ -100,6 +165,7 @@
             }
             console.log(tascvd_tc_report);
 
+            /*
             // Thai CV Risk Score (waist-to-height ratio formula).
             let tascvd_whr;
             let tascvd_whr_report;
@@ -114,6 +180,7 @@
                 tascvd_whr_report = `${tascvd_whr_model_name} = ${tascvd_whr}%`;
             }
             console.log(tascvd_whr_report);
+             */
 
             // AHA PREVENT(TM)
             let aha_prevent_model_name;
@@ -369,6 +436,10 @@
 
             if(age === 0 || bmi === 0 || waist === 0 || height === 0 || sbp === 0 || dbp === 0 || fm_dm === 0 || fpg === 0) {
                 drs_report = `${drs_model_name} = ${warning_parameter}.`;
+                drs_report_th = `${drs_model_name} = ${warning_parameter}.`;
+            } else if (fpg >= 126 || HbA1c >= 6.5 || dm === 1) {
+                drs_report = `${drs_model_name} = no DRS score available because the individual was already diabetic.`;
+                drs_report_th = `${drs_model_name} = ไม่สามารถคำนวนได้เนื่องจากเข้าเกณฑ์วินิจฉัยเบาหวานแล้ว.`;
             } else {
                 let drs_score = 0;
                 let drs_tier;
@@ -412,9 +483,16 @@
             // Generate report
             let report = document.getElementById("report");
             let report_string = "";
-            report_string += tascvd_tc_report + "\n";
+            // Thai report.
+            report_string += "[ รายงานภาษาไทย ]" + "\n";
             report_string += tascvd_tc_report_th + "\n";
-            report_string += tascvd_whr_report + "\n";
+            report_string += drs_report_th + "\n";
+            // English report.
+            report_string += "[ English Report ]" + "\n";
+
+            report_string += tascvd_tc_report + "\n";
+
+            /* report_string += tascvd_whr_report + "\n"; */
             report_string += aha_prevent_report_CVD10_base_model + "\n";
             report_string += aha_prevent_report_CVD10_uacr_model + "\n";
             report_string += aha_prevent_report_CVD10_HbA1c_model + "\n";
@@ -425,8 +503,9 @@
             report_string += aha_prevent_report_HF10_uacr_model + "\n";
             report_string += aha_prevent_report_HF10_HbA1c_model + "\n";
             report_string += drs_report + "\n";
-            report_string += drs_report_th + "\n";
+
             report_string += "\n" + "*** = Insufficient parameters to calculate." + "\n";
+            report_string += "\n" + "*** = ข้อมูลไม่เพียงพอต่อการคำนวน" + "\n";
             report.value = report_string;
         }
     </script>
@@ -438,6 +517,36 @@
 <h1>Health Risk Evaluator (เครื่องมือประเมินความเสี่ยงสุขภาพ)</h1>
 
 <form action = "">
+    <fieldset>
+        <legend>
+            <strong>Select risk scoring system to evaluate (กรุณาเลือกระบบประเมินความเสี่ยงที่จะประเมิน)</strong>
+        </legend> <br>
+
+
+        <input type="checkbox" class="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
+        <label for="tcvrs_to_eval">Thai CV Risk Score</label> <br><br>
+
+        <!--
+        <input type="checkbox" class="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
+        <label for="tcvrs_to_eval">Thai CV Risk Score</label> <br><br>
+        value="onclick="myFunction()"
+        -->
+
+        <label class="switch">
+            <input type="checkbox" id="test" name="test" checked>
+            <span class="slider round"></span>
+        </label>
+        <label for="tcvrs_to_eval">Thai CV Risk Score</label>
+
+
+        <br><br>
+
+
+        <input type="checkbox" class="checkbox" id="drs_to_eval" name="drs_to_eval" checked> <!-- value="onclick="myFunction()"-->
+        <label for="drs_to_eval">Diabetic Risk Score</label> <br><br>
+
+    </fieldset> <br>
+
     <fieldset>
         <legend>
             <strong>Enter available health information (left blank if not available) (กรุณากรอกข้อมูลที่มีอยู่ หากไม่มีข้อมูลกรุณาเว้นว่างไว้)</strong>
@@ -585,7 +694,7 @@
         <label for="report"></label>
         <label>
             <!-- <input type="text" id = "report" name = "report"> <br><br> -->
-            <textarea name="report" id="report" cols="100" rows="50"></textarea>
+            <textarea name="report" id="report" cols="100" rows="50" style="font-size: 100%"></textarea>
         </label>
     </fieldset>
 
@@ -642,3 +751,10 @@
 
 </body>
 </html>
+
+<!-- Changelog
+
+- Add ability to choose specific risk score to evaluate.
+- Group English reports and Thai reports.
+
+-->
