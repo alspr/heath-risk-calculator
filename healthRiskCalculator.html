@@ -49,10 +49,13 @@
         .slider.round:before {
             border-radius: 50%;
         }
-        .test {
-            height: 0;
+        .sliderText {
+            height: 3px;
             display: inline-block;
             vertical-align: middle;
+            font-size: 100%;
+        }
+        .defaultText {
             font-size: 100%;
         }
 
@@ -526,20 +529,27 @@
             <input type="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
             <span class="slider round"></span>
         </label>
-        <label class="test">&nbsp;Thai CV Risk Score</label>
+        <label class="sliderText">&nbsp;Thai CV Risk Score</label>
         <br><br>
 
         <label class="switch">
             <input type="checkbox" id="drs_to_eval" name="drs_to_eval" checked>
             <span class="slider round"></span>
         </label>
-        <label class="test">&nbsp;Diabetic Risk Score</label>
+        <label class="sliderText">&nbsp;Diabetic Risk Score</label>
+        <br><br>
+
+        <label class="switch">
+            <input type="checkbox" id="aha_prevent_to_eval" name="aha_prevent_to_eval">
+            <span class="slider round"></span>
+        </label>
+        <label class="sliderText">&nbsp;AHA PREVENT(TM) <span style="color:#DE0A26">&nbsp;(underdevelopment อยู่ระหว่างการพัฒนา)</span> </label>
         <br><br>
 
     </fieldset> <br>
 
     <fieldset>
-        <legend>
+        <legend class="defaultText">
             <strong>Enter available health information (left blank if not available) (กรุณากรอกข้อมูลที่มีอยู่ หากไม่มีข้อมูลกรุณาเว้นว่างไว้)</strong>
         </legend>
         <br>
