@@ -118,7 +118,7 @@
 
 
         .noteBoxes {border: 1px solid; border-radius: 5px; padding: 0; margin: 0; width: 90px;}
-        .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px;}
+        .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px; height: 16px; /* position: relative;vertical-align: center; */
         .box_drs_optional {border: 1px dashed; border-radius: 5px;padding: 0; margin: 0; width: 43px;}
         .type_tcvrs_tc {border-color: #a70000; background-color: rgba(167, 0, 0, 0.1);}
         .type_drs {border-color: #273ea5; background-color: rgba(39, 62, 165, 0.1);}
@@ -599,14 +599,23 @@
         <label class="sliderText">&nbsp;Diabetic Risk Score</label>
         <br><br>
 
+        <!--
         <label class="switch">
             <input type="checkbox" id="aha_prevent_to_eval" name="aha_prevent_to_eval">
             <span class="slider round"></span>
         </label>
-        <label class="sliderText">&nbsp;AHA PREVENT(TM) <!-- <span style="color:#DE0A26">&nbsp;(underdevelopment อยู่ระหว่างการพัฒนา)</span> --> </label>
+        <label class="sliderText">&nbsp;AHA PREVENT(TM)</label>
         <br><br>
+        -->
 
     </fieldset> <br>
+
+    <!-- Tags
+        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
+        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+    -->
+
 
     <fieldset>
         <legend class="defaultText">
@@ -619,81 +628,78 @@
             <option value = 0>Female (หญิง)</option>
             <option value = 1>Male (ชาย)</option>
         </select>
-        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
+
         <br><br>
 
         <label for="age">Age (years) (อายุ (ปี)):</label>
         <input type="number" id = "age" name = "age">
-        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
-        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
+
+        <!--
+        <label for="bmi">Body mass index (BMI; kg/m^2) (ค่าดัชนีมวลกาย (กก./ม.^2):</label>
+        <input type="number" id = "bmi" name = "bmi">
+        <br><br>
+        -->
 
         <label for="weight">Weight (kg) (น้ำหนัก (กก.)):</label>
         <input type="number" id = "weight" name = "weight">
-        <div class="box_aha_prevent_base_optional type_aha_prevent_base_optional" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
         <label for="height">Height (cm) (ส่วนสูง (ซม.)):</label>
         <input type="number" id = "height" name = "height">
-        <div class="box_aha_prevent_base_optional type_aha_prevent_base_optional" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
-        <label for="waist">Waist circumference (cm) (เส้นรอบเอว (ซม.)):</label> <!-- **-->
-        <input type="number" id = "waist" name = "waist"> <br><br>
-
-        <label for="bmi">Body mass index (BMI; kg/m^2) (ค่าดัชนีมวลกาย (กก./ม.^2):</label>
-        <input type="number" id = "bmi" name = "bmi">
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
-        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
+        <label for="waist">Waist circumference (cm) (เส้นรอบเอว (ซม.)):</label>
+        <input type="number" id = "waist" name = "waist">
         <br><br>
+
 
         <label for="sbp">Systolic blood pressure (SBP; mmHg):</label> <!-- (ค่าแรงดันในหลอดเลือดแดงขณะหัวใจบีบตัว (มม.ปรอท)) -->
         <input type="number" id = "sbp" name = "sbp">
-        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
-        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
 
         <label for="dbp">Diastolic blood pressure (DBP; mmHg):</label> <!-- (ค่าแรงดันในหลอดเลือดแดงขณะหัวใจคลายตัว (มม.ปรอท)) -->
         <input type="number" id = "dbp" name = "dbp">
-        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
 
         <label for="tc">Total cholesterol (mg/dL) (โคเรสเตอรอลรวม (มก./เดซิลิตร)):</label>
         <input type="number" id = "tc" name = "tc">
-        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
-        <label for="hdl">HDL cholesterol (mg/dL):</label> <!-- (คอเลสเตอรอลชนิดดี (มก./เดซิลิตร)) -->
+        <!--
+        <label for="hdl">HDL cholesterol (mg/dL):</label>
         <input type="number" id = "hdl" name = "hdl">
         <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
+        --> <!-- (คอเลสเตอรอลชนิดดี (มก./เดซิลิตร)) -->
 
+        <!--
         <label for="egfr">Estimated glomerular filtration rate (eGFR; mL/min/1.73m^2):</label>
         <input type="number" id = "egfr" name = "egfr">
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
+        -->
 
+        <!--
         <label for="uacr">Urine albumin-to-creatinine ratio (UACR; mg/g):</label>
         <input type="number" id = "uacr" name = "uacr"> <br><br>
+        -->
 
         <label for="fpg">Fasting Plasma Glucose (FPG, mg/dL):</label>
         <input type="number" id = "fpg" name = "fpg">
-        <div class="box_drs_optional type_drs_optional" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
 
+        <!--
         <label for="HbA1c">HbA1c (%):</label>
-        <input type="number" id = "HbA1c" name = "HbA1c"> <br><br>
+        <input type="number" id = "HbA1c" name = "HbA1c">
+        <div style="display: inline-block;">&nbsp;<span style="color:inherit">(ถ้ามี)</span></div>
+        <br><br>
+        -->
 
         <label for="hypertension">Hypertension (เป็นโรคความดันโลหิตสูง)</label>
         <select id="hypertension" name="hypertension">
             <option value=0>No (ไม่เป็น)</option>
             <option value=1>Yes (เป็น)</option>
         </select>
-        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
 
         <label for="diabetes">Diabetes (เป็นโรคเบาหวาน)</label>
@@ -701,8 +707,6 @@
             <option value=0>No (ไม่เป็น)</option>
             <option value=1>Yes (เป็น)</option>
         </select>
-        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
         <label for="fm_diabetes">Family history of diabetes (ประวัติโรคเบาหวานในญาติสายตรง (พ่อ แม่ พี่ หรือน้อง))</label>
@@ -710,7 +714,6 @@
             <option value=0>No (ไม่มี)</option>
             <option value=1>Yes (มี)</option>
         </select>
-        <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
         <br><br>
 
         <label for="smoke">Currently smoking (สูบบุหรี่อยู่)</label>
@@ -718,34 +721,38 @@
             <option value=0>No (ไม่)</option>
             <option value=1>Yes (ใช่)</option>
         </select>
-        <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
+        <!--
         <label for="antiHTMed">Anti-hypertensive medication (รัปทานยาลดความดันโลหิต)</label>
         <select id="antiHTMed" name="antiHTMed">
             <option value=0>No (ไม่)</option>
             <option value=1>Yes (ใช่)</option>
         </select>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
+        -->
 
+        <!--
         <label for="lipidLoweringMed">Lipid-lowering medication (รัปทานยาลดไขมันในเลือด)</label>
         <select id="lipidLoweringMed" name="lipidLoweringMed">
             <option value=0>No (ไม่)</option>
             <option value=1>Yes (ใช่)</option>
         </select>
-        <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
+        -->
+
 
         <input type="button" class ="button_default" style="font-size: 100%" value="Calculate (คำนวน)" onclick = "evaluateHealthRisk()">
 
+        <!--
         <p>
             <strong>Note (หมายเหตุ):</strong>
         </p>
         <ol>
             <li> Weight and height values have priority over BMI value. (ค่าน้ำหนักและส่วนสูงจะถูกใช้แทนค่า BMI) </li>
         </ol>
+        -->
+
     </fieldset> <br>
 
     <fieldset>
@@ -762,6 +769,7 @@
 
 </form>
 
+<!--
 <p style="text-align:justify;">
     <br>
     <strong>This tool will evaluate your available health information against the following risk scoring systems: </strong> <br>
@@ -795,6 +803,7 @@
         <a href="https://diabetesatlas.org/atlas/fourth-edition/">[visit original website]</a> <br>
     </li>
 </ol>
+-->
 
 <p style="text-align:justify;">
     <br>
