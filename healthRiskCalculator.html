@@ -57,9 +57,17 @@
         .slider.round:before {
             border-radius: 50%;
         }
-        .inline{
+        #test {
+            height: 5px;
             display: inline-block;
+            vertical-align: middle;
         }
+        .cache {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
 
 
 
@@ -533,10 +541,10 @@
         -->
 
         <label class="switch">
-            <input type="checkbox" id="test" name="test" checked>
+            <input type="checkbox" id="test_sth" name="test" checked>
             <span class="slider round"></span>
         </label>
-        <label for="tcvrs_to_eval">Thai CV Risk Score</label>
+        <label id="test">Thai CV Risk Score</label>
 
 
         <br><br>
