@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang = "en-US">
 <head>
-    <meta charset = "UTF-8">
+    <meta charset = "UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         .switch {position: relative; display: inline-block; width: 60px; height: 34px;}
         .switch input {
@@ -108,6 +108,8 @@
             let whr; if(waist !== 0 || height !== 0) {whr = waist / height;} else {whr = 0;}
             if (height !== 0 && weight !== 0) {bmi = weight / Math.sqrt(height);} else {}
             // Log inputs to console.
+            console.log(`TCVRS evaluation: ${tcvrs_to_eval}`);
+            console.log(`DRS evaluation: ${drs_to_eval}`);
             console.log(`Sex = ${sex}`);
             console.log(`Age = ${age} years`);
             console.log(`Weight = ${weight} kg`);
