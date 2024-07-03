@@ -49,10 +49,11 @@
         .slider.round:before {
             border-radius: 50%;
         }
-        #test {
+        .test {
             height: 3px;
             display: inline-block;
             vertical-align: middle;
+            font-size: 100%;
         }
 
         .noteBoxes {border: 1px solid; border-radius: 5px; padding: 0; margin: 0; width: 90px;}
@@ -523,11 +524,15 @@
             <input type="checkbox" id="tcvrs_to_eval" name="tcvrs_to_eval" checked>
             <span class="slider round"></span>
         </label>
-        <label id="test">&nbsp;Thai CV Risk Score</label>
+        <label class="test">&nbsp;Thai CV Risk Score</label>
         <br><br>
 
-        <input type="checkbox" class="checkbox" id="drs_to_eval" name="drs_to_eval" checked> <!-- value="onclick="myFunction()"-->
-        <label for="drs_to_eval">Diabetic Risk Score</label> <br><br>
+        <label class="switch">
+            <input type="checkbox" id="drs_to_eval" name="drs_to_eval" checked>
+            <span class="slider round"></span>
+        </label>
+        <label class="test">&nbsp;Diabetic Risk Score</label>
+        <br><br>
 
     </fieldset> <br>
 
