@@ -59,6 +59,61 @@
             font-size: 100%;
         }
 
+
+        /* <select> styles */
+        select {
+            /* Reset */
+            appearance: menulist-button;
+            outline: 0;
+            font: inherit;
+            /* Personalize */
+            width: inherit;
+            color: inherit;
+            border-color: inherit;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .button_default {
+            background-color: #e1ecf4;
+            border-radius: 5px;
+            border: 1px solid #7aa7c7;
+            box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+            box-sizing: border-box;
+            color: #39739d;
+            cursor: pointer;
+            display: inline-block;
+            font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.15385;
+            margin: 0;
+            outline: none;
+            padding: 8px .8em;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: baseline;
+            white-space: nowrap;
+        }
+        .button_default:hover,
+        .button_default:focus {
+            background-color: #b3d3ea;
+            color: #2c5777;
+        }
+        .button_default:focus {
+            box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+        }
+        .button_default:active {
+            background-color: #a0c7e4;
+            box-shadow: none;
+            color: #2c5777;
+        }
+        
+
         .noteBoxes {border: 1px solid; border-radius: 5px; padding: 0; margin: 0; width: 90px;}
         .box_drs {border: 1px solid;border-radius: 5px;padding: 0; margin: 0; width: 43px;}
         .box_drs_optional {border: 1px dashed; border-radius: 5px;padding: 0; margin: 0; width: 43px;}
@@ -78,8 +133,9 @@
         // from textBoxes.html
         function evaluateHealthRisk(){
             // Obtain risk score system of interest.
-            let tcvrs_to_eval = document.getElementById("tcvrs_to_eval").checked;
-            let drs_to_eval = document.getElementById("drs_to_eval").checked;
+            const tcvrs_to_eval = document.getElementById("tcvrs_to_eval").checked;
+            const drs_to_eval = document.getElementById("drs_to_eval").checked;
+            const aha_prevent_to_eval = document.getElementById("aha_prevent_to_eval").checked;
             // Obtain health information values.
             let sex = document.getElementById("sex").value; sex = Number(sex); // 0 = female, 1 = male.
             let age = document.getElementById("age").value; age = Number(age);
@@ -113,6 +169,7 @@
             // Log inputs to console.
             console.log(`TCVRS evaluation: ${tcvrs_to_eval}`);
             console.log(`DRS evaluation: ${drs_to_eval}`);
+            console.log(`AHA PREVENT evaluation: ${aha_prevent_to_eval}`);
             console.log(`Sex = ${sex}`);
             console.log(`Age = ${age} years`);
             console.log(`Weight = ${weight} kg`);
@@ -543,7 +600,7 @@
             <input type="checkbox" id="aha_prevent_to_eval" name="aha_prevent_to_eval">
             <span class="slider round"></span>
         </label>
-        <label class="sliderText">&nbsp;AHA PREVENT(TM) <span style="color:#DE0A26">&nbsp;(underdevelopment อยู่ระหว่างการพัฒนา)</span> </label>
+        <label class="sliderText">&nbsp;AHA PREVENT(TM) <!-- <span style="color:#DE0A26">&nbsp;(underdevelopment อยู่ระหว่างการพัฒนา)</span> --> </label>
         <br><br>
 
     </fieldset> <br>
@@ -556,8 +613,8 @@
 
         <label for="sex">Gender (เพศ):</label>
         <select id="sex" name="sex">
-            <option value = 1>Male (ชาย)</option>
             <option value = 0>Female (หญิง)</option>
+            <option value = 1>Male (ชาย)</option>
         </select>
         <div class="noteBoxes type_tcvrs_tc" style="display: inline-block;">&nbsp;<span style="color:#a70000">TCVRS-TC</span></div>
         <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
@@ -678,7 +735,7 @@
         <div class="box_aha_prevent_base type_aha_prevent_base" style="display: inline-block;">&nbsp;<span style="color:#0A5C36">AHA PREVENT-B</span></div>
         <br><br>
 
-        <input type="button" value="Calculate (คำนวน)" onclick = "evaluateHealthRisk()">
+        <input type="button" class ="button_default" style="font-size: 100%" value="Calculate (คำนวน)" onclick = "evaluateHealthRisk()">
 
         <p>
             <strong>Note (หมายเหตุ):</strong>
