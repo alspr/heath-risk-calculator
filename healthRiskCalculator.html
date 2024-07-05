@@ -116,6 +116,10 @@
             color: #2c5777;
         }
 
+
+        textarea {
+            width: 100%;
+        }
         /*
         input[type=number] {
             width: 100%;
@@ -181,17 +185,6 @@
             .type_aha_prevent_base_optional {
                 border-color: #0A5C36;
                 background-color: rgba(10, 92, 54, 0.05);
-            }
-
-            .wrapper {
-                padding: 20px;
-                margin: 15px 0;
-                background-color: #0f9d58;
-            }
-
-            textarea {
-                font-size: 20px;
-                width: 100%;
             }
         }
     </style>
@@ -886,8 +879,8 @@
         <label for="report"></label>
         <label>
             <!-- <input type="text" id = "report" name = "report"> <br><br> -->
-            <div class="wrapper">
-                <textarea name="report" id="report" cols="125" rows="50" style="font-size: 100%"></textarea>
+            <div>
+                <textarea name="report" id="report" style="font-size: 100%;" cols="150" rows="50" ></textarea>
             </div>
 
         </label>
