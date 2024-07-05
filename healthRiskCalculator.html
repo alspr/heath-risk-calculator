@@ -182,6 +182,17 @@
                 border-color: #0A5C36;
                 background-color: rgba(10, 92, 54, 0.05);
             }
+
+            .wrapper {
+                padding: 20px;
+                margin: 15px 0;
+                background-color: #0f9d58;
+            }
+
+            textarea {
+                font-size: 20px;
+                width: 100%;
+            }
         }
     </style>
 
@@ -291,18 +302,16 @@
                 tascvd_tc = tascvd_tc * 100;
                 tascvd_tc = Number(tascvd_tc.toFixed(report_digit));
                 tascvd_tc_report = `${tascvd_tc_model_name} = ${tascvd_tc}%`;
-                if (tascvd_tc <5) {
-                    tascvd_tier_description_th = "เสี่ยงต่ำ (<5%)";
-                } else if (tascvd_tc >= 5 && tascvd_tc <= 10) {
-                    tascvd_tier_description_th = "เสี่ยงน้อย (5-10%)";
-                } else if (tascvd_tc > 10 && tascvd_tc <= 20) {
-                    tascvd_tier_description_th = "เสี่ยงปลานกลาง (>10-20%)";
-                } else if (tascvd_tc >20 && tascvd_tc <= 30) {
-                    tascvd_tier_description_th = "เสี่ยงสูง (>20-30%)";
+                if (tascvd_tc <10) {
+                    tascvd_tier_description_th = "เสี่ยงน้อย (<10%)";
+                } else if (tascvd_tc >= 10 && tascvd_tc < 20) {
+                    tascvd_tier_description_th = "เสี่ยงปลานกลาง (10-<20%)";
+                } else if (tascvd_tc >=20 && tascvd_tc <= 30) {
+                    tascvd_tier_description_th = "เสี่ยงสูง (20-30%)";
                 } else {
                     tascvd_tier_description_th = "เสี่ยงสูงมาก (>30%)";
                 }
-                tascvd_tc_report_th = `ผลคำนวนความเสี่ยงหัวใจและหลอดเลือด (Thai CV risk) ${tascvd_tc}% = ${tascvd_tier_description_th}`;
+                tascvd_tc_report_th =   `การคำนวนความเสี่ยงโรคหัวใจและหลอดเลือด (Thai CV risk): ความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปีเท่ากับ = ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}`; /* ท่านมีความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปีเท่ากับ ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}` */
                 /*
                 tascvd_tc_report_th = `ความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปี ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}`;
                  */
@@ -587,18 +596,19 @@
                 drs_report_th = `${drs_model_name} = ${warning_parameter}.`;
             } else if (fpg >= 126 || dm === 1) { /* || HbA1c >= 6.5 */
                 drs_report = `${drs_model_name} = no DRS score available because the individual was already diabetic.`;
-                drs_report_th = `${drs_model_name} = ไม่สามารถคำนวนได้เนื่องจากเข้าเกณฑ์วินิจฉัยเบาหวานแล้ว.`;
+                drs_report_th = `${drs_model_name} = ไม่สามารถคำนวณได้เนื่องจากเข้าเกณฑ์วินิจฉัยเบาหวานแล้ว.`;
             } else {
                 let drs_score = 0;
                 let drs_tier;
                 let drs_tier_description;
                 let drs_tier_description_th;
+                let drs_tier_score_range;
 
                 if (age < 35) {drs_score += 0;} else if (age >= 35 && age <45) {drs_score += 1;} else if (age >=45 && age <50) {drs_score += 2;} else if (age >= 50 && age <60) {drs_score += 3;} else {drs_score += 4;}
                 if (bmi < 23) {drs_score += 0;} else if (bmi >= 23 && bmi <27.5) {drs_score += 1;} else {drs_score += 3;}
                 if (whr <= 0.5) {drs_score += 0;} else if (whr >0.5 && whr <= 0.6) {drs_score += 3;} else {drs_score += 5;}
                 if (ht === 1) { /* || antiHTMed === 1 */
-                    if (sbp >= 140) {drs_score += 4;} else {drs_score += 2;}
+                    if (sbp >= 140 ) {drs_score += 4;} else {drs_score += 2;}
                 }
                 if (fm_dm === 1) {drs_score += 2;} else {drs_score += 0;}
                 if (fpg === 0) {
@@ -610,23 +620,28 @@
                 if (drs_tier === 1) {
                     drs_tier_description = "Low-risk (0-5%)";
                     drs_tier_description_th = "น้อย (0-5%)";
+                    drs_tier_score_range = "≤7";
                 } else if (drs_tier === 2) {
-                    drs_tier_description = "Low-to-moderate risk (6-10%)";
+                    drs_tier_description = "Low-to-Moderate risk (6-10%)";
                     drs_tier_description_th = "น้อย-ปานกลาง (6-10%)";
+                    drs_tier_score_range = "8-10";
                 } else if (drs_tier === 3) {
-                    drs_tier_description = "Moderate-to-high risk (11-20%)";
+                    drs_tier_description = "Moderate-to-High risk (11-20%)";
                     drs_tier_description_th = "ปานกลาง-สูง (11-20%)";
+                    drs_tier_score_range = "11-14";
                 } else if (drs_tier === 4) {
                     drs_tier_description = "High risk (21-30%)";
                     drs_tier_description_th = "สูง (21-30%)";
+                    drs_tier_score_range = "15-16";
                 } else {
-                    drs_tier_description = "Extremely high risk (>=30%)";
-                    drs_tier_description_th = "สูงมาก (>=30%)";
+                    drs_tier_description = "Extremely High risk (≥30%)";
+                    drs_tier_description_th = "สูงมาก (≥30%)";
+                    drs_tier_score_range = "≥17";
                 }
                 drs_report = `${drs_model_name}. Risk score = ${drs_score}: ${drs_tier_description}.`;
                 console.log(drs_report);
                 /* drs_report_th = `ระดับความเสี่ยงต่อการเกิดโรคเบาหวานใน 10 ปีข้างหน้า ${drs_tier_description_th} (คะแนนความเสี่ยง = ${drs_score})`; */
-                drs_report_th = `ผลคำนวนความเสี่ยงโรคเบาหวาน (Thai DM 2023) = ${drs_tier_description_th} (คะแนนความเสี่ยง = ${drs_score})`;
+                drs_report_th = `การคำนวณความเสี่ยงโรคเบาหวาน (Thai DM 2023): คะแนนความเสี่ยง = ${drs_score} คะแนน (${drs_tier_score_range} คะแนน) ท่านมีระดับความเสี่ยงต่อการเกิดโรคเบาหวานใน 10 ปีข้างหน้า ${drs_tier_description_th}`;
                 console.log(`drs_report_th = ${drs_report_th}`);
 
             }
@@ -638,7 +653,6 @@
             report_string += "[ รายงานภาษาไทย ]" + "\n";
             report_string += tascvd_tc_report_th + "\n";
             report_string += drs_report_th + "\n";
-
 
 
             // English report.
@@ -665,6 +679,8 @@
             report_string += "*** = Insufficient parameters to calculate." + "\n";
             report_string += "*** = ข้อมูลไม่เพียงพอต่อการคำนวน" + "\n";
             report.value = report_string;
+
+
         }
     </script>
     <!-- <link rel = "stylesheet"
@@ -717,6 +733,13 @@
         <div class="box_drs type_drs" style="display: inline-block;">&nbsp;<span style="color:#273ea5">DRS</span></div>
     -->
 
+    <fieldset>
+        <legend class="defaultText">
+            <strong>หมายเหตุ</strong>
+        </legend>
+        <label style="color:red">หากผู้รับบริการแจ้งมีโรคประจำตัวความดันโลหิตสูงหรือทานยาลดความดันโลหิตอยู่ให้ใช้<span style="font-weight:bold;"> "ความดันซ้ำที่ดีที่สุด" </span>ในการกรอกแบบคำนวนนี้</label>
+    </fieldset>
+    <br>
 
     <fieldset>
         <legend class="defaultText">
@@ -763,7 +786,7 @@
         <input type="number" id = "dbp" name = "dbp">
         <br><br>
 
-        <label for="tc">Total cholesterol (mg/dL) (โคเรสเตอรอลรวม (มก./เดซิลิตร)):</label>
+        <label for="tc">Total cholesterol (mg/dL) (โคเลสเตอรอลรวม (มก./เดซิลิตร)):</label>
         <input type="number" id = "tc" name = "tc">
         <br><br>
 
@@ -810,7 +833,7 @@
         </select>
         <br><br>
 
-        <label for="fm_diabetes">Family history of diabetes (ประวัติโรคเบาหวานในญาติสายตรง (พ่อ แม่ พี่ หรือน้อง))</label>
+        <label for="fm_diabetes">Family history of diabetes (ประวัติโรคเบาหวานในญาติสายตรง (พ่อ แม่ พี่ หรือน้องร่วมบิดามารดา))</label>
         <select id="fm_diabetes" name="fm_diabetes">
             <option value=0>No (ไม่มี)</option>
             <option value=1>Yes (มี)</option>
@@ -863,7 +886,10 @@
         <label for="report"></label>
         <label>
             <!-- <input type="text" id = "report" name = "report"> <br><br> -->
-            <textarea name="report" id="report" cols="100" rows="50" style="font-size: 100%"></textarea>
+            <div class="wrapper">
+                <textarea name="report" id="report" cols="125" rows="50" style="font-size: 100%"></textarea>
+            </div>
+
         </label>
     </fieldset>
 
