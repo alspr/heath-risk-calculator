@@ -276,7 +276,7 @@
                 whr = 0;
             }
             if (height !== 0 && weight !== 0) {
-                bmi = weight / Math.sqrt(height);
+                bmi = weight / Math.sqrt(height/100);
                 console.log(`Derived BMI = ${bmi}`);
             }
 
