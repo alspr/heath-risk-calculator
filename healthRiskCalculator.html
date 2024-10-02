@@ -282,6 +282,7 @@
 
             // Thai CV Risk Score (total cholesterol formula).
             let tascvd_tc;
+            let tascvd_tier_description_en;
             let tascvd_tier_description_th;
             let tascvd_tc_report;
             let tascvd_tc_report_th;
@@ -294,16 +295,20 @@
                 tascvd_tc = 1 - Math.pow(0.964588, Math.exp(tascvd_tc - 7.04423));
                 tascvd_tc = tascvd_tc * 100;
                 tascvd_tc = Number(tascvd_tc.toFixed(report_digit));
-                tascvd_tc_report = `${tascvd_tc_model_name} = ${tascvd_tc}%`;
                 if (tascvd_tc <10) {
+                    tascvd_tier_description_en = "low risk (<10%)";
                     tascvd_tier_description_th = "เสี่ยงน้อย (<10%)";
                 } else if (tascvd_tc >= 10 && tascvd_tc < 20) {
+                    tascvd_tier_description_en = "medium risk (10-<20%)";
                     tascvd_tier_description_th = "เสี่ยงปลานกลาง (10-<20%)";
                 } else if (tascvd_tc >=20 && tascvd_tc <= 30) {
+                    tascvd_tier_description_en = "high risk (20-30%)";
                     tascvd_tier_description_th = "เสี่ยงสูง (20-30%)";
                 } else {
+                    tascvd_tier_description_en = "very high risk (>30%)";
                     tascvd_tier_description_th = "เสี่ยงสูงมาก (>30%)";
                 }
+                tascvd_tc_report = `${tascvd_tc_model_name}: 10-Year risk of coronary artery disease and stroke = ${tascvd_tc}% classified as ${tascvd_tier_description_en}`;
                 tascvd_tc_report_th =   `การคำนวนความเสี่ยงโรคหัวใจและหลอดเลือด (Thai CV risk): ความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปีเท่ากับ = ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}`; /* ท่านมีความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปีเท่ากับ ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}` */
                 /*
                 tascvd_tc_report_th = `ความเสี่ยงต่อการเกิดโรคเส้นเลือดหัวใจและหลอดเลือดในระยะเวลา 10 ปี ${tascvd_tc}% จัดอยู่ในกลุ่ม ${tascvd_tier_description_th}`;
