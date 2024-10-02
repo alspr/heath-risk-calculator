@@ -607,7 +607,7 @@
                 if (fpg === 0) {
                     if (drs_score <= 6) {drs_tier = 1;} else if (drs_score >= 7 && drs_score <= 9) {drs_tier = 2;} else if (drs_score >= 10 && drs_score <= 12) {drs_tier = 3;} else if (drs_score >= 13 && drs_score <= 14) {drs_tier = 4;} else {drs_tier = 5;}
                 } else {
-                    if (fpg <= 100) {drs_score += 0} else {drs_score += 5}
+                    if (fpg < 100) {drs_score += 0} else {drs_score += 5}
                     if (drs_score <= 7) {drs_tier = 1;} else if (drs_score >= 8 && drs_score <= 10) {drs_tier = 2;} else if (drs_score >= 11 && drs_score <= 14) {drs_tier = 3;} else if (drs_score >= 15 && drs_score <= 16) {drs_tier = 4;} else {drs_tier = 5;}
                 }
                 if (drs_tier === 1) {
